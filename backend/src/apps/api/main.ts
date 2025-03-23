@@ -30,6 +30,8 @@ async function bootstrap() {
   const logger = new Logger('App');
 
   await app.listen(appConfig.port);
-  logger.log(`Server successfully started on port ${appConfig.port}`);
+  logger.log(
+    `Server successfully started on port ${appConfig.port} (http://localhost:${appConfig.port})`,
+  );
 }
 bootstrap();

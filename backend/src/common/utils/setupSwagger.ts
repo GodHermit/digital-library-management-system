@@ -8,12 +8,16 @@ export const setupSwagger = (app: INestApplication<any>) => {
     .setVersion('1.0.0')
     .addBearerAuth({
       name: 'authorization',
-      description: 'Access token',
+      description: 'Access token for authentication (may start with "Bearer ")',
       in: 'header',
       type: 'apiKey',
     })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 };

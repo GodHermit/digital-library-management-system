@@ -9,6 +9,6 @@ import { WalletRepository } from 'src/common/database/repositories/wallets.repos
   imports: [forwardRef(() => AuthModule)],
   controllers: [UsersController],
   providers: [UsersService, UsersRepository, WalletRepository],
-  exports: [UsersService],
+  exports: [UsersService, UsersRepository],
 })
 export class UsersModule {}

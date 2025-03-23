@@ -1,21 +1,16 @@
 import { Controller, Get, NotFoundException } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import {
-  GetWalletAddress,
-  UseBearerTokenAuthGuard,
-  UseOptionalAuthGuard,
-} from '../auth/guards/auth.guard';
-import { UsersService } from './users.service';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BearerTokenAuth } from '../auth/decorators/bearer-token-auth.decorator';
+import { GetWalletAddress } from '../auth/decorators/get-wallet-address.decorator';
 import { UserDto } from './dto/user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiBearerAuth()
-  @UseOptionalAuthGuard()
-  @UseBearerTokenAuthGuard()
+  @BearerTokenAuth()
   @ApiResponse({ type: UserDto })
   @Get()
   async getUser(@GetWalletAddress() defaultWallet: string) {

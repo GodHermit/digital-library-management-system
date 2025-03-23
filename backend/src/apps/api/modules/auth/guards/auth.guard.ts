@@ -1,22 +1,21 @@
 import {
-  applyDecorators,
   CanActivate,
-  createParamDecorator,
   ExecutionContext,
   Injectable,
   Logger,
   NotFoundException,
-  SetMetadata,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { PRIVY_USER_KEY, USER_METADATA_KEY } from '../constants/keys';
-import { IRequestWithUser, TPrivyAuthParams } from '../types/auth';
-import { PrivyAuthService } from '../services/privy-auth.service';
+import { includes } from 'lodash';
 import { UsersRepository } from 'src/common/database/repositories/users.repository';
+import { UserEntity } from '../../users/entities/user.entity';
+import { EUserRole } from '../../users/types/user.enum';
 import { UsersService } from '../../users/users.service';
+import { PRIVY_USER_KEY, USER_METADATA_KEY } from '../constants/keys';
+import { PrivyAuthService } from '../services/privy-auth.service';
+import { IRequestWithUser, TPrivyAuthParams } from '../types/auth';
 
 export interface UserMetadata {
   defaultWallet?: string;
@@ -47,6 +46,11 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
     );
 
+    const roles = this.reflector.get<EUserRole[] | undefined>(
+      'roles',
+      context.getHandler(),
+    );
+
     const authToken = this.getAuthorizationToken(request);
 
     if (!authToken && isAuthOptional) {
@@ -59,7 +63,6 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      console.log('params', authToken);
       const params = await this.privyAuthService.validateAuthToken(authToken);
 
       if (isGetPrivyData) {
@@ -80,10 +83,18 @@ export class AuthGuard implements CanActivate {
       request.user = user;
 
       this.storeUserMetadata(context, user, params.defaultWallet);
-      return true;
+
+      if (!roles || roles.length <= 0) {
+        return true;
+      }
+
+      return includes(roles, user.role);
     } catch (error) {
       this.logger.error('Privy Auth failed', error);
-      if (error instanceof NotFoundException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof UnauthorizedException
+      ) {
         throw error;
       }
 
@@ -129,9 +140,9 @@ export class AuthGuard implements CanActivate {
     privyId: string,
     defaultWallet: string,
     nonDefaultWallets: string[],
-  ): Promise<any> {
+  ): Promise<UserEntity> {
     const user = await this.usersRepo.findOne({
-      where: { privy_id: privyId },
+      where: { privyId: privyId },
     });
 
     if (!user) {
@@ -149,58 +160,3 @@ export class AuthGuard implements CanActivate {
     return user;
   }
 }
-
-export const UseBearerTokenAuthGuard = () => {
-  return applyDecorators(UseGuards(AuthGuard));
-};
-
-export const UseOptionalAuthGuard = () => SetMetadata('isAuthOptional', true);
-
-export const GetWalletAddress = createParamDecorator(
-  (data: never, ctx: ExecutionContext): string => {
-    const logger = new Logger(GetWalletAddress.name);
-    const reflector = new Reflector();
-
-    const metadata = reflector.get<UserMetadata>(
-      USER_METADATA_KEY,
-      ctx.getHandler(),
-    );
-    const defaultWallet = metadata?.defaultWallet;
-
-    // Reflector to get the flag from the context
-    const isAuthOptional = reflector.get<boolean>(
-      'isAuthOptional',
-      ctx.getHandler(),
-    );
-
-    if (!defaultWallet && !isAuthOptional) {
-      logger.error(
-        'Request is authenticated, but wallet address was not found',
-      );
-      throw new NotFoundException('Wallet address was not found');
-    }
-
-    // Return null if auth is optional and defaultWallet is not present
-    return defaultWallet || null;
-  },
-);
-
-export const GetUserPrivyId = createParamDecorator(
-  (data: never, ctx: ExecutionContext): string | null => {
-    const logger = new Logger(GetUserPrivyId.name);
-    const reflector = new Reflector();
-
-    const metadata = reflector.get<UserMetadata>(
-      USER_METADATA_KEY,
-      ctx.getHandler(),
-    );
-    const privyId = metadata?.privy_id;
-
-    if (!privyId) {
-      logger.error('Request is authenticated, but users not found');
-      throw new NotFoundException('User not found');
-    }
-
-    return privyId || null;
-  },
-);

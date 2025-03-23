@@ -78,7 +78,7 @@ export class UsersService {
 
   async updateUserProfile(privyId: string, dto: CreateOrUpdateUserDto) {
     const user = await this.usersRepository.findOne({
-      where: { privy_id: privyId },
+      where: { privyId: privyId },
     });
 
     if (!user) {
@@ -112,7 +112,7 @@ export class UsersService {
         merge(existingUser || {}, {
           email,
           phone,
-          privy_id: privyId,
+          privyId,
         }),
       );
 
@@ -131,7 +131,7 @@ export class UsersService {
       const user = await this.usersRepository.save(
         // Lodash Merge is used because it removes undefined or nullable fields from `source2` object parameter (3d).
         merge(existingUser || {}, {
-          privy_id: privyId,
+          privyId,
           email,
           phone,
         }),
