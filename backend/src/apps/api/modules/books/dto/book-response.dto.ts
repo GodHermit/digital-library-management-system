@@ -53,17 +53,23 @@ export class BookResponseDto {
     this.title = entity.title;
     this.description = entity.description;
     this.publishedAt = entity.publishedAt;
-    this.publishedBy = new UserPublicResponseDto(entity.publishedBy);
+    if (entity.publishedBy) {
+      this.publishedBy = new UserPublicResponseDto(entity.publishedBy);
+    }
     if (entity.publisher) {
       this.publisher = new PublisherResponseDto(entity.publisher);
     }
-    this.authors = entity.authors.map(
-      (author) => new UserPublicResponseDto(author),
-    );
+    if (entity.authors) {
+      this.authors = entity.authors.map(
+        (author) => new UserPublicResponseDto(author),
+      );
+    }
     this.language = entity.language;
     this.coverUrl = entity.coverUrl;
     this.priceInETH = entity.priceInETH;
-    this.genres = entity.genres.map((genre) => new GenreResponseDto(genre));
+    if (entity.genres) {
+      this.genres = entity.genres.map((genre) => new GenreResponseDto(genre));
+    }
     this.seriesId = entity.seriesId;
     this.edition = entity.edition;
     this.format = entity.format;

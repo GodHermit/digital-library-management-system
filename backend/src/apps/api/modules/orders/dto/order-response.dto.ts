@@ -1,46 +1,54 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BookResponseDto } from '../../books/dto/book-response.dto';
-import { OrderEntity } from '../entities/order.entity';
-import { UserDto } from '../../users/dto/user.dto';
 import { EOrderStatus } from '../types/order.enum';
+import { OrderTransactionResponseDto } from './order-transaction-response.dto';
+import { OrderEntity } from '../entities/order.entity';
+import { OrderItemResponseDto } from './order-item.dto';
 
 export class OrderResponseDto {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
-  book: BookResponseDto;
+  orderedByUserId: string;
 
   @ApiProperty()
   orderedAt: Date;
 
-  @ApiProperty()
-  orderedBy: UserDto;
-
   @ApiProperty({ enum: EOrderStatus })
   status: EOrderStatus;
 
-  @ApiProperty({ nullable: true })
-  orderTxHash: string;
-
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ required: false })
   paidPriceInETH?: number;
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ required: false })
   orderCompletedOrClosedAt?: Date;
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ required: false })
   closeReason?: string;
 
-  constructor(entity: OrderEntity) {
-    this.id = entity.id;
-    this.book = new BookResponseDto(entity.book);
-    this.orderedAt = entity.orderedAt;
-    this.orderedBy = new UserDto(entity.orderedBy);
-    this.status = entity.status;
-    this.orderTxHash = entity.orderTxHash;
-    this.paidPriceInETH = entity.paidPriceInETH;
-    this.orderCompletedOrClosedAt = entity.orderCompletedOrClosedAt;
-    this.closeReason = entity.closeReason;
+  @ApiProperty({ type: OrderItemResponseDto, isArray: true })
+  items: OrderItemResponseDto[];
+
+  @ApiProperty({ type: OrderTransactionResponseDto, isArray: true })
+  transactions: OrderTransactionResponseDto[];
+
+  constructor(order: OrderEntity) {
+    this.id = order.id;
+    this.orderedByUserId = order.orderedByUserId;
+    this.orderedAt = order.orderedAt;
+    this.status = order.status;
+    this.paidPriceInETH =
+      order.transactions?.reduce(
+        (acc, transaction) => acc + transaction.valueInEth,
+        0,
+      ) || 0;
+    this.orderCompletedOrClosedAt = order.orderCompletedOrClosedAt;
+    this.closeReason = order.closeReason;
+    this.items =
+      order.items?.map((item) => new OrderItemResponseDto(item)) || [];
+    this.transactions =
+      order.transactions?.map(
+        (transaction) => new OrderTransactionResponseDto(transaction),
+      ) || [];
   }
 }

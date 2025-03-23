@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { EXAMPLE_UUIDS } from '../../books/constants/examples';
 
 export class CreateOrderDto {
-  @ApiProperty()
-  @IsString()
-  @IsUUID()
-  bookId: string;
+  @ApiProperty({ example: EXAMPLE_UUIDS })
+  @IsArray()
+  @IsNotEmpty()
+  @IsString({ each: true })
+  @IsUUID('4', { each: true })
+  bookIds: string[];
 }

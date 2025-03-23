@@ -4,6 +4,9 @@ import { WalletRepository } from './repositories/wallets.repository';
 import { BooksRepository } from './repositories/books.repository';
 import { GenresRepository } from './repositories/genres.repository';
 import { PublishersRepository } from './repositories/publishers.repository';
+import { OrdersRepository } from './repositories/order.repository';
+import { OrderItemsRepository } from './repositories/order-item.repository';
+import { OrderTransactionsRepository } from './repositories/order-transaction.repository';
 
 const REPOSITORIES = [
   UsersRepository,
@@ -11,6 +14,9 @@ const REPOSITORIES = [
   BooksRepository,
   GenresRepository,
   PublishersRepository,
+  OrdersRepository,
+  OrderItemsRepository,
+  OrderTransactionsRepository,
 ];
 
 @Module({
