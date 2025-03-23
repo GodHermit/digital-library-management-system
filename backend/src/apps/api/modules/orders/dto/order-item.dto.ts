@@ -16,8 +16,6 @@ export class OrderItemResponseDto {
   updatedAt?: Date;
 
   constructor(entity: OrderItemEntity) {
-    console.log(entity);
-
     entity.book.priceInETH = entity.priceInETH;
 
     this.id = entity.id;

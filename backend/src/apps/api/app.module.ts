@@ -12,11 +12,12 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { HealthModule } from 'src/common/modules/health/health.module';
 import { GenresModule } from './modules/genres/genres.module';
 import { PublishersModule } from './modules/publishers/publishers.module';
+import redisConfig from 'src/common/configs/redis.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [appConfig],
+      load: [appConfig, redisConfig],
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(typeOrmConfig),

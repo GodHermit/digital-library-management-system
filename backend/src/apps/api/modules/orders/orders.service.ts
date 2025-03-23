@@ -33,7 +33,7 @@ export class OrdersService {
     query: PaginateQuery,
     user: UserEntity,
   ): Promise<Paginated<OrderEntity>> {
-    return paginate(query, this.ordersRepository, {
+    return paginate(query, this.ordersRepository.getRepository(), {
       ...ORDERS_PAGINATION,
       where: {
         orderedBy: { id: user.id },
@@ -42,7 +42,11 @@ export class OrdersService {
   }
 
   async getAllOrders(query: PaginateQuery): Promise<Paginated<OrderEntity>> {
-    return paginate(query, this.ordersRepository, ORDERS_PAGINATION);
+    return paginate(
+      query,
+      this.ordersRepository.getRepository(),
+      ORDERS_PAGINATION,
+    );
   }
 
   async getOrderById(id: string): Promise<OrderEntity> {
@@ -96,12 +100,11 @@ export class OrdersService {
       );
     }
 
-    const order = this.ordersRepository.create({
-      items: orderItems,
-      orderedBy: user,
-      orderedAt: new Date(),
-      status: EOrderStatus.PENDING,
-    });
+    const order = new OrderEntity();
+    order.items = orderItems;
+    order.orderedBy = user;
+    order.orderedAt = new Date();
+    order.status = EOrderStatus.PENDING;
     await this.ordersRepository.save(order);
     return order;
   }
