@@ -17,6 +17,9 @@ export class AuthService {
 
     const existingUser = await this.usersRepository.findOne({
       where: { privyId: userData.privyId },
+      relations: {
+        organization: true,
+      },
     });
 
     const user = await this.usersService.createOrUpdateUser({

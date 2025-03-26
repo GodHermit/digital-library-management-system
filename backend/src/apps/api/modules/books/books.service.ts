@@ -27,39 +27,43 @@ export class BooksService {
     user: UserEntity,
   ): Promise<BookEntity> {
     const { genreIds, ...rest } = createBookDto;
-    const genres = await this.genresRepository.find({
-      where: {
-        id: In(genreIds),
-      },
-    });
-    const notFoundGenreIds = differenceWith(
-      genreIds,
-      genres,
-      (a, b) => a === b.id,
-    );
-
-    if (notFoundGenreIds.length > 0) {
-      throw new BadRequestException(
-        `Genres not found: ${notFoundGenreIds.join(', ')}`,
+    if (genreIds?.length > 0) {
+      const genres = await this.genresRepository.find({
+        where: {
+          id: In(genreIds),
+        },
+      });
+      const notFoundGenreIds = differenceWith(
+        genreIds,
+        genres,
+        (a, b) => a === b.id,
       );
+
+      if (notFoundGenreIds.length > 0) {
+        throw new BadRequestException(
+          `Genres not found: ${notFoundGenreIds.join(', ')}`,
+        );
+      }
     }
 
     const { authorIds } = createBookDto;
-    const authors = await this.usersRepository.find({
-      where: {
-        id: In(authorIds),
-      },
-    });
-    const notFoundAuthorIds = differenceWith(
-      authorIds,
-      authors,
-      (a, b) => a === b.id,
-    );
-
-    if (notFoundAuthorIds.length > 0) {
-      throw new BadRequestException(
-        `Authors not found: ${notFoundAuthorIds.join(', ')}`,
+    if (authorIds?.length > 0) {
+      const authors = await this.usersRepository.find({
+        where: {
+          id: In(authorIds),
+        },
+      });
+      const notFoundAuthorIds = differenceWith(
+        authorIds,
+        authors,
+        (a, b) => a === b.id,
       );
+
+      if (notFoundAuthorIds.length > 0) {
+        throw new BadRequestException(
+          `Authors not found: ${notFoundAuthorIds.join(', ')}`,
+        );
+      }
     }
 
     const book = this.booksRepository.create({

@@ -1,7 +1,8 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BookEntity } from '../../books/entities/book.entity';
 import { OrderEntity } from './order.entity';
+import { OrderItemTransactionEntity } from './order-item-transaction.entity';
 
 @Entity('order_items')
 export class OrderItemEntity extends BaseEntity {
@@ -26,4 +27,13 @@ export class OrderItemEntity extends BaseEntity {
 
   @Column({ type: 'double precision' })
   priceInETH: number;
+
+  @OneToMany(
+    () => OrderItemTransactionEntity,
+    (transaction) => transaction.item,
+    {
+      eager: true,
+    },
+  )
+  transactions?: OrderItemTransactionEntity[];
 }

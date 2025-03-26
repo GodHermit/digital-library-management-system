@@ -7,6 +7,7 @@ import { PublishersRepository } from './repositories/publishers.repository';
 import { OrdersRepository } from './repositories/order.repository';
 import { OrderItemsRepository } from './repositories/order-item.repository';
 import { OrderTransactionsRepository } from './repositories/order-transaction.repository';
+import { OrderItemTransactionsRepository } from './repositories/order-item-transaction.repository';
 
 const REPOSITORIES = [
   UsersRepository,
@@ -17,6 +18,7 @@ const REPOSITORIES = [
   OrdersRepository,
   OrderItemsRepository,
   OrderTransactionsRepository,
+  OrderItemTransactionsRepository,
 ];
 
 @Module({

@@ -14,7 +14,8 @@ import { UpdatePublisherDto } from './dto/update-publisher.dto';
 import { PublisherResponseDto } from './dto/publisher-response.dto';
 import { PublishersService } from './publishers.service';
 import { BearerTokenAuth } from '../auth/decorators/bearer-token-auth.decorator';
-import { EUserRole } from '../users/types/user.enum';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Controller('publishers')
 @ApiTags('publishers')
@@ -42,11 +43,12 @@ export class PublisherController {
   @Post()
   @ApiOperation({ summary: 'Create a new publisher' })
   @ApiResponse({ type: PublisherResponseDto })
-  @BearerTokenAuth(EUserRole.ADMIN)
+  @BearerTokenAuth()
   async createPublisher(
     @Body() dto: CreatePublisherDto,
+    @GetUser() user: UserEntity,
   ): Promise<PublisherResponseDto> {
-    const publisher = await this.publisherService.create(dto);
+    const publisher = await this.publisherService.create(dto, user);
     return new PublisherResponseDto(publisher);
   }
 
@@ -54,22 +56,26 @@ export class PublisherController {
   @ApiOperation({ summary: 'Update a publisher by ID' })
   @ApiResponse({ type: PublisherResponseDto })
   @ApiParam({ name: 'id' })
-  @BearerTokenAuth(EUserRole.ADMIN)
+  @BearerTokenAuth()
   async updatePublisher(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdatePublisherDto,
+    @GetUser() user: UserEntity,
   ): Promise<PublisherResponseDto> {
-    const publisher = await this.publisherService.update(id, dto);
+    const publisher = await this.publisherService.update(id, dto, user);
     return new PublisherResponseDto(publisher);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete a publisher by ID' })
   @ApiResponse({ type: PublisherResponseDto })
-  @BearerTokenAuth(EUserRole.ADMIN)
+  @BearerTokenAuth()
   async deletePublisher(
     @Param('id', new ParseUUIDPipe()) id: string,
+    @GetUser() user: UserEntity,
   ): Promise<PublisherResponseDto> {
-    return new PublisherResponseDto(await this.publisherService.remove(id));
+    return new PublisherResponseDto(
+      await this.publisherService.remove(id, user),
+    );
   }
 }

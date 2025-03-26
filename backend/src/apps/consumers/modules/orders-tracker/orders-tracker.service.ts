@@ -31,7 +31,7 @@ export class OrdersTrackerService
       address: DIGITAL_LIBRARY_CONTRACT,
       abi: digitalLibraryAbi,
       eventName: 'OrderPaid',
-      pollingInterval: SECOND,
+      pollingInterval: 5 * SECOND,
       onLogs: async (logs) => {
         for (let i = 0; i < logs.length; i++) {
           try {
@@ -39,7 +39,7 @@ export class OrdersTrackerService
             const args = log.args;
 
             this.logger.log(
-              `Received event for order ${args.orderId} with ${formatEther(args.amount)} ETH`,
+              `[Order ${args.orderId}]: Received event for order ${args.orderId} with ${formatEther(args.amount)} ETH`,
             );
 
             await this.ordersQueue.add(

@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsDateString,
   IsNotEmpty,
   IsNumber,
@@ -69,6 +70,8 @@ export class CreateBookDto {
 
   @ApiProperty({ example: EXAMPLE_UUIDS })
   @IsUUID('4', { each: true })
+  @IsNotEmpty({ each: true })
+  @IsArray()
   @IsNotEmpty()
   genreIds: string[];
 

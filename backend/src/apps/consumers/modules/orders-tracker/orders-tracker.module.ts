@@ -5,6 +5,9 @@ import { OrdersRepository } from 'src/common/database/repositories/order.reposit
 import { ORDERS_QUEUE } from './constants/queue';
 import { OrdersTrackerConsumer } from './orders-tracker.consumer';
 import { OrdersTrackerService } from './orders-tracker.service';
+import { OrderItemTransactionsRepository } from 'src/common/database/repositories/order-item-transaction.repository';
+import { PublishersRepository } from 'src/common/database/repositories/publishers.repository';
+import { UsersRepository } from 'src/common/database/repositories/users.repository';
 
 @Module({
   imports: [
@@ -17,6 +20,9 @@ import { OrdersTrackerService } from './orders-tracker.service';
     OrdersTrackerConsumer,
     OrdersRepository,
     OrderTransactionsRepository,
+    OrderItemTransactionsRepository,
+    PublishersRepository,
+    UsersRepository,
   ],
   exports: [OrdersTrackerService, OrdersTrackerConsumer],
 })

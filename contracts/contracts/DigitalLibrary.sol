@@ -15,7 +15,7 @@ contract DigitalLibrary is Ownable {
     /// @notice Event emitted when an order is paid.
     /// @param orderId The UUID v4 string of the order.
     /// @param amount The amount of ETH paid.
-    event OrderPaid(string indexed orderId, uint256 amount);
+    event OrderPaid(string orderId, uint256 amount);
 
     /// @notice Event emitted when the treasury wallet is updated.
     /// @param newTreasuryWallet The address of the new treasury wallet.

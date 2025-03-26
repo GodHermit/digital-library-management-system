@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { TPrivyAuthParams } from '../types/auth';
 import { IPrivyConfig } from 'src/common/configs/privy.config';
 import { ConfigNames } from 'src/common/types/enums/configNames.enum';
+import { Address } from 'viem';
 
 @Injectable()
 export class PrivyAuthService {
@@ -36,7 +37,7 @@ export class PrivyAuthService {
           (wallet as { connectorType: string })?.connectorType === 'embedded',
       );
 
-      const defaultWalletAddress = (defaultWallet as { address: string })
+      const defaultWalletAddress = (defaultWallet as { address: Address })
         ?.address;
 
       const nonDefaultWallets = user.linkedAccounts
@@ -46,7 +47,7 @@ export class PrivyAuthService {
             'address' in account &&
             account.address !== defaultWalletAddress,
         )
-        .map((account) => (account as { address: string }).address);
+        .map((account) => (account as { address: Address }).address);
 
       return {
         email: user.email?.address || null,

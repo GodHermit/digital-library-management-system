@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Address } from 'viem';
 
 export class CreateOrUpdateUserDto {
   @IsUUID()
@@ -22,12 +23,12 @@ export class CreateOrUpdateUserDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  defaultWallet: string;
+  defaultWallet: Address;
 
   @ApiProperty({ isArray: true, type: 'string' })
   @IsOptional()
   @IsString({ each: true })
-  nonDefaultWallets: string[];
+  nonDefaultWallets: Address[];
 
   @ApiProperty()
   @IsNotEmpty()

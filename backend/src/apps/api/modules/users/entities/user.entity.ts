@@ -3,9 +3,10 @@ import {
   EUserType,
 } from 'src/apps/api/modules/users/types/user.enum';
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { WalletEntity } from './wallet.entity';
 import { BookEntity } from '../../books/entities/book.entity';
+import { PublisherEntity } from '../../publishers/entities/publisher.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -33,9 +34,15 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true, default: false })
   isOnboardingFinished?: boolean;
 
-  @OneToMany(() => WalletEntity, (wallet) => wallet.user, { cascade: true })
+  @OneToMany(() => WalletEntity, (wallet) => wallet.user, {
+    cascade: true,
+    eager: true,
+  })
   wallets: WalletEntity[];
 
   @OneToMany(() => BookEntity, (book) => book.publishedBy)
   publishedBooks: BookEntity[];
+
+  @OneToOne(() => PublisherEntity, (publisher) => publisher.ownedBy)
+  organization: PublisherEntity;
 }

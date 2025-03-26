@@ -16,6 +16,7 @@ import { UsersService } from '../../users/users.service';
 import { PRIVY_USER_KEY, USER_METADATA_KEY } from '../constants/keys';
 import { PrivyAuthService } from '../services/privy-auth.service';
 import { IRequestWithUser, TPrivyAuthParams } from '../types/auth';
+import { Address } from 'viem';
 
 export interface UserMetadata {
   defaultWallet?: string;
@@ -138,8 +139,8 @@ export class AuthGuard implements CanActivate {
 
   private async validateUser(
     privyId: string,
-    defaultWallet: string,
-    nonDefaultWallets: string[],
+    defaultWallet: Address,
+    nonDefaultWallets: Address[],
   ): Promise<UserEntity> {
     const user = await this.usersRepo.findOne({
       where: { privyId: privyId },

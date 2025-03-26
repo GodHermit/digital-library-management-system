@@ -8,6 +8,7 @@ import { CreateOrUpdateUserDto } from './dto/create-or-update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UsersRepository } from 'src/common/database/repositories/users.repository';
 import { WalletRepository } from 'src/common/database/repositories/wallets.repository';
+import { Address } from 'viem';
 
 @Injectable()
 export class UsersService {
@@ -17,8 +18,8 @@ export class UsersService {
   ) {}
 
   async updateUserWallets(
-    defaultWallet: string,
-    nonDefaultWallets: string[],
+    defaultWallet: Address,
+    nonDefaultWallets: Address[],
     user: UserEntity,
   ) {
     const allWallets = await this.walletRepository.find({
@@ -93,8 +94,11 @@ export class UsersService {
       data;
 
     if (id) {
-      const existingUser = await this.usersRepository.findOneBy({
-        id,
+      const existingUser = await this.usersRepository.findOne({
+        where: { id },
+        relations: {
+          organization: true,
+        },
       });
 
       if (!existingUser) {

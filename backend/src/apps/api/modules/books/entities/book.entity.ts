@@ -54,12 +54,13 @@ export class BookEntity extends BaseEntity {
 
   @ManyToOne(() => PublisherEntity, (publisher) => publisher.books, {
     eager: true,
+    nullable: true,
   })
   @JoinColumn({ name: 'publisherId' })
   publisher?: PublisherEntity;
 
-  @Column()
-  publisherId: string;
+  @Column({ nullable: true })
+  publisherId?: string;
 
   @ManyToMany(() => GenreEntity, (genre) => genre.books, { eager: true })
   @JoinTable({
