@@ -11,9 +11,10 @@ import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';
 import { OrdersService } from './orders.service';
 import { BooksModule } from '../books/books.module';
+import { PublishersModule } from '../publishers/publishers.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, BooksModule],
+  imports: [UsersModule, AuthModule, BooksModule, PublishersModule],
   controllers: [OrdersController],
   providers: [
     UsersRepository,

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUrl, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+} from 'class-validator';
 import { EXAMPLE_UUID } from '../../books/constants/examples';
 
 export class CreatePublisherDto {
@@ -14,8 +20,9 @@ export class CreatePublisherDto {
   @IsNotEmpty()
   website: string;
 
-  @ApiProperty({ example: EXAMPLE_UUID })
+  @ApiProperty({ example: EXAMPLE_UUID, required: false })
   @IsUUID()
   @IsNotEmpty()
-  ownerId: string;
+  @IsOptional()
+  ownerId?: string;
 }

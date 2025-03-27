@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { BooksRepository } from 'src/common/database/repositories/books.repository';
 import { runWithQueryRunner } from 'src/common/utils/run-with-query-runner';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { CreatePublisherDto } from './dto/create-publisher.dto';
 import { PublisherEntity } from './entities/publisher.entity';
 import { UpdatePublisherDto } from './dto/update-publisher.dto';
@@ -26,6 +26,7 @@ export class PublishersService {
   async create(
     createPublisherDto: CreatePublisherDto,
     user: UserEntity,
+    qr?: QueryRunner,
   ): Promise<PublisherEntity> {
     const publisher = new PublisherEntity();
     publisher.name = createPublisherDto.name;
@@ -33,12 +34,12 @@ export class PublishersService {
 
     if (user.role === EUserRole.ADMIN) {
       const owner = await this.usersRepository.findOneBy({
-        id: createPublisherDto.ownerId,
+        id: createPublisherDto?.ownerId,
       });
 
       if (!owner) {
         throw new BadRequestException(
-          `User not found: ${createPublisherDto.ownerId}`,
+          `User not found: ${createPublisherDto?.ownerId}`,
         );
       }
 
@@ -49,7 +50,7 @@ export class PublishersService {
       publisher.ownedByUserId = user.id;
     }
 
-    return this.publishersRepository.save(publisher);
+    return this.publishersRepository.save(publisher, qr);
   }
 
   async update(

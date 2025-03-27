@@ -9,12 +9,19 @@ import { UserEntity } from './entities/user.entity';
 import { UsersRepository } from 'src/common/database/repositories/users.repository';
 import { WalletRepository } from 'src/common/database/repositories/wallets.repository';
 import { Address } from 'viem';
+import { OnboardingDto } from './dto/onboarding.dto';
+import { EUserType } from './types/user.enum';
+import { PublishersService } from '../publishers/publishers.service';
+import { runWithQueryRunner } from 'src/common/utils/run-with-query-runner';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly dataSource: DataSource,
     private readonly usersRepository: UsersRepository,
     private readonly walletRepository: WalletRepository,
+    private readonly publishersService: PublishersService,
   ) {}
 
   async updateUserWallets(
@@ -194,5 +201,42 @@ export class UsersService {
 
   get repository() {
     return this.usersRepository;
+  }
+
+  async finishOnboarding(dto: OnboardingDto, user: UserEntity) {
+    const { fullName, email, description, userType, organization } = dto;
+
+    return await runWithQueryRunner(this.dataSource, async (qr) => {
+      if (user.isOnboardingFinished) {
+        throw new BadRequestException('Onboarding is already finished');
+      }
+
+      user.fullName = fullName;
+      user.email = email;
+      user.description = description;
+      user.userType = userType;
+
+      if (userType === EUserType.PUBLISHER) {
+        if (!organization) {
+          throw new BadRequestException(
+            'Organization is required for publisher',
+          );
+        }
+
+        const newOrganization = await this.publishersService.create(
+          organization,
+          user,
+          qr,
+        );
+
+        user.organization = newOrganization;
+      }
+
+      user.isOnboardingFinished = true;
+
+      await this.usersRepository.save(user, qr);
+
+      return user;
+    });
   }
 }
