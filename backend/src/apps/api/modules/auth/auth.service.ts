@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserDto } from '../users/dto/user.dto';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 import { PrivyAuthService } from './services/privy-auth.service';
 import { UsersRepository } from 'src/common/database/repositories/users.repository';
 import { UsersService } from '../users/users.service';
@@ -12,7 +12,7 @@ export class AuthService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async registerUser(authToken?: string): Promise<UserDto> {
+  async registerUser(authToken?: string): Promise<UserResponseDto> {
     const userData = await this.privyAuthService.validateAuthToken(authToken);
 
     const existingUser = await this.usersRepository.findOne({
@@ -27,6 +27,6 @@ export class AuthService {
       ...userData,
     });
 
-    return new UserDto(user);
+    return new UserResponseDto(user);
   }
 }

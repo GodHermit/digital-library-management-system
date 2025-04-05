@@ -14,6 +14,8 @@ import { EUserType } from './types/user.enum';
 import { PublishersService } from '../publishers/publishers.service';
 import { runWithQueryRunner } from 'src/common/utils/run-with-query-runner';
 import { DataSource } from 'typeorm';
+import { paginate, PaginateQuery } from 'nestjs-paginate';
+import { USERS_PAGINATION } from './configs';
 
 @Injectable()
 export class UsersService {
@@ -87,6 +89,9 @@ export class UsersService {
   async updateUserProfile(privyId: string, dto: CreateOrUpdateUserDto) {
     const user = await this.usersRepository.findOne({
       where: { privyId: privyId },
+      relations: {
+        organization: true,
+      },
     });
 
     if (!user) {
@@ -238,5 +243,11 @@ export class UsersService {
 
       return user;
     });
+  }
+
+  async getAllUsers(query: PaginateQuery) {
+    const data = await paginate(query, this.usersRepository, USERS_PAGINATION);
+
+    return data;
   }
 }

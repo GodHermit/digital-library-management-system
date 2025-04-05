@@ -1,6 +1,6 @@
 import { Controller, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserDto } from '../users/dto/user.dto';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 import { AuthService } from './auth.service';
 import { GetAuthorizationHeader } from './decorators/get-authorization-header.decorator';
 
@@ -11,7 +11,7 @@ export class AuthController {
 
   @Post('register')
   @ApiBearerAuth()
-  @ApiResponse({ type: UserDto })
+  @ApiResponse({ type: UserResponseDto })
   async registerPlayer(
     @GetAuthorizationHeader() authToken: string | undefined,
   ) {

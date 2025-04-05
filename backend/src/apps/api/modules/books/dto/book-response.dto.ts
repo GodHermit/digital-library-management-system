@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserDto } from '../../users/dto/user.dto';
 import { BookEntity } from '../../books/entities/book.entity';
 import { GenreResponseDto } from '../../genres/dto/genre-response.dto';
 import { PublisherResponseDto } from '../../publishers/dto/publisher-response.dto';
@@ -19,10 +18,10 @@ export class BookResponseDto {
   publishedAt: Date;
 
   @ApiProperty()
-  publishedBy: UserDto;
+  publishedBy: UserPublicResponseDto;
 
-  @ApiProperty({ type: [UserDto] })
-  authors: UserDto[];
+  @ApiProperty({ type: [UserPublicResponseDto] })
+  authors: UserPublicResponseDto[];
 
   @ApiProperty()
   language: string;
