@@ -7,7 +7,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { FrownIcon, SearchIcon } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 
@@ -80,21 +80,21 @@ export function SearchModal({ isOpen, onOpenChange }: ShareModalProps) {
                 ref={inputRef}
               />
             </ModalHeader>
-            <ModalBody className="pt-0 pb-4 px-4">
+            <ModalBody className="px-4 pb-4 pt-0">
               {filteredArticles.length === 0 && (
                 <>
-                  <div className="flex justify-center items-center gap-2 text-default-500">
+                  <div className="flex items-center justify-center gap-2 text-default-500">
                     No results found <FrownIcon />
                   </div>
                 </>
               )}
             </ModalBody>
-            <ModalFooter className="justify-start gap-4 pt-0 px-4">
-              <div className="flex gap-1 items-center text-sm text-default-400">
+            <ModalFooter className="justify-start gap-4 px-4 pt-0">
+              <div className="flex items-center gap-1 text-sm text-default-400">
                 <Kbd className="text-default-400" keys={['enter']}></Kbd>
                 to select
               </div>
-              <div className="flex gap-1 items-center text-sm text-default-400">
+              <div className="flex items-center gap-1 text-sm text-default-400">
                 <Kbd className="text-default-400" keys={['down']}></Kbd>
                 <Kbd className="text-default-400" keys={['up']}></Kbd>
                 to navigate

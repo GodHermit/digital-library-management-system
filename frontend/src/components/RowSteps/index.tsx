@@ -1,12 +1,12 @@
 'use client';
 
 import type { ComponentProps } from 'react';
-import type { ButtonProps } from '@nextui-org/react';
+import type { ButtonProps } from "@heroui/react";
 
 import React from 'react';
 import { useControlledState } from '@react-stately/utils';
 import { m, LazyMotion, domAnimation } from 'framer-motion';
-import { cn } from '@nextui-org/react';
+import { cn } from "@heroui/react";
 
 export type RowStepProps = {
   title?: React.ReactNode;
@@ -121,38 +121,38 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
         '[--active-color:var(--step-color)]',
         '[--complete-background-color:var(--step-color)]',
         '[--complete-border-color:var(--step-color)]',
-        '[--inactive-border-color:hsl(var(--nextui-default-300))]',
-        '[--inactive-color:hsl(var(--nextui-default-300))]',
+        '[--inactive-border-color:hsl(var(--heroui-default-300))]',
+        '[--inactive-color:hsl(var(--heroui-default-300))]',
       ];
 
       switch (color) {
         case 'primary':
-          userColor = '[--step-color:hsl(var(--nextui-primary))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-primary-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-primary))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-primary-foreground))]';
           break;
         case 'secondary':
-          userColor = '[--step-color:hsl(var(--nextui-secondary))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-secondary-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-secondary))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-secondary-foreground))]';
           break;
         case 'success':
-          userColor = '[--step-color:hsl(var(--nextui-success))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-success-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-success))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-success-foreground))]';
           break;
         case 'warning':
-          userColor = '[--step-color:hsl(var(--nextui-warning))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-warning-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-warning))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-warning-foreground))]';
           break;
         case 'danger':
-          userColor = '[--step-color:hsl(var(--nextui-error))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-error-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-error))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-error-foreground))]';
           break;
         case 'default':
-          userColor = '[--step-color:hsl(var(--nextui-default))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-default-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-default))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-default-foreground))]';
           break;
         default:
-          userColor = '[--step-color:hsl(var(--nextui-primary))]';
-          fgColor = '[--step-fg-color:hsl(var(--nextui-primary-foreground))]';
+          userColor = '[--step-color:hsl(var(--heroui-primary))]';
+          fgColor = '[--step-fg-color:hsl(var(--heroui-primary-foreground))]';
           break;
       }
 
@@ -160,7 +160,7 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
       if (!className?.includes('--step-color')) colorsVars.unshift(userColor);
       if (!className?.includes('--inactive-bar-color'))
         colorsVars.push(
-          '[--inactive-bar-color:hsl(var(--nextui-default-300))]'
+          '[--inactive-bar-color:hsl(var(--heroui-default-300))]'
         );
 
       return colorsVars;
@@ -199,7 +199,7 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
                   onClick={() => !isReadOnly && setCurrentStep(stepIdx)}
                   {...props}
                 >
-                  <div className="h-ful relative flex items-center">
+                  <div className="relative flex h-full items-center">
                     <LazyMotion features={domAnimation}>
                       <m.div animate={status} className="relative">
                         <m.div
@@ -231,7 +231,7 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
                         >
                           <div className="flex items-center justify-center">
                             {status === 'complete' ? (
-                              <CheckIcon className="h-6 w-6 text-[var(--active-fg-color)]" />
+                              <CheckIcon className="size-6 text-[var(--active-fg-color)]" />
                             ) : (
                               <span>{stepIdx + 1}</span>
                             )}

@@ -40,7 +40,7 @@ export const useCopyToClipboard = (
         } else {
           throw new Error('writeText not supported');
         }
-      } catch (e) {
+      } catch {
         oldCopyMethod(value);
         setState(value);
       }

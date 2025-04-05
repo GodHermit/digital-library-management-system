@@ -1,6 +1,6 @@
 import { useSettingsStore } from '@/stores/settings';
 import { FONT_SIZE } from '@/types/settings';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from "@heroui/react";
 import { useShallow } from 'zustand/shallow';
 
 export function FontSizeSettings() {
@@ -25,7 +25,7 @@ export function FontSizeSettings() {
           <span className="text-base">Base</span>
         </SelectItem>
         <SelectItem key={FONT_SIZE.MEDIUM} textValue="Medium">
-          <span className="text-md">Medium</span>
+          <span className="text-medium">Medium</span>
         </SelectItem>
         <SelectItem key={FONT_SIZE.LARGE} textValue="Large">
           <span className="text-lg">Large</span>

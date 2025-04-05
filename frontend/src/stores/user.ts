@@ -1,26 +1,16 @@
-import { User, UserRole } from "@/types/user";
+import { IUser } from "@/types/user";
 import { create } from "zustand";
 
 export interface IUserStore {
   /**
    * The user object
    */
-  user?: User;
-  setUser: (user: User) => void;
+  user?: IUser;
+  setUser: (user: IUser) => void;
 }
 
 export const userStore = create<IUserStore>((set) => ({
-  user: {
-    id: "",
-    name: "",
-    email: "",
-    description: "",
-    isAuthor: true,
-    role: UserRole.ADMIN,
-    isOnboardingFinished: true,
-    createdAt: "",
-    updatedAt: "",
-  },
+  user: undefined,
   setUser: (user) => set({ user }),
 }));
 

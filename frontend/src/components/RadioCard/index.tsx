@@ -1,4 +1,4 @@
-import { cn, Radio, RadioProps } from '@nextui-org/react';
+import { cn, Radio, RadioProps } from "@heroui/react";
 
 export const RadioCard = (props: RadioProps) => {
   const { children, ...otherProps } = props;

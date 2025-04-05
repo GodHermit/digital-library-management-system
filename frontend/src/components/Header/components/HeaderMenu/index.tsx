@@ -8,7 +8,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Tooltip,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import clsx from 'clsx';
 import { EllipsisVerticalIcon, Share2Icon } from 'lucide-react';
 import { useState } from 'react';

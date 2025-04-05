@@ -9,7 +9,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { CheckIcon, LinkIcon } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -36,7 +36,7 @@ export function ShareModal({ isOpen, onOpenChange }: ShareModalProps) {
                 value={url}
                 width={undefined}
                 height={undefined}
-                className="w-full max-w-88"
+                className="w-full max-w-80"
                 bgColor="none"
                 fgColor={colorMode === COLOR_MODE.DARK ? '#fafafa' : '#333'}
                 title={url}

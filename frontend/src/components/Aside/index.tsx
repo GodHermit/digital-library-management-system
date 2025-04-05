@@ -17,25 +17,25 @@ import { useDebounceValue } from 'usehooks-ts';
 import { useShallow } from 'zustand/shallow';
 import { AsideItem } from './components';
 import { useUserStore } from '@/stores/user';
-import { UserRole } from '@/types/user';
+import { EUserRole, EUserType } from '@/types/user';
 
 export function Aside() {
-  const [isAsideOpen] = useSettingsStore(useShallow((s) => [s.isAsideOpen]));
+  const [isAsideOpen] = useSettingsStore(useShallow(s => [s.isAsideOpen]));
   const [isAsideOpenDebounce] = useDebounceValue(isAsideOpen, 300);
   const isAsideOpenAnimated = isAsideOpenDebounce && isAsideOpen;
-  const user = useUserStore(useShallow((s) => s.user));
+  const user = useUserStore(useShallow(s => s.user));
 
   return (
     <aside
       className={clsx(
-        'flex flex-col p-4 gap-2 max-h-screen h-screen bg-default-50 overflow-y-auto overflow-x-hidden transition-all duration-300 print:hidden',
+        'flex h-screen max-h-screen flex-col gap-2 overflow-y-auto overflow-x-hidden bg-default-50 p-4 transition-all duration-300 print:hidden',
         {
           'w-[18.75rem] min-w-[18.75rem]': isAsideOpen,
           'w-[4.5rem] min-w-[4.5rem]': !isAsideOpen,
         }
       )}
     >
-      <div className="flex items-baseline gap-2 h-[2.1875rem] text-2xl font-bold mb-4 leading-none">
+      <div className="mb-4 flex h-[2.1875rem] items-baseline gap-2 text-2xl font-bold leading-none">
         <LibraryBigIcon width={40} height={40} className="translate-y-1" />
         {isAsideOpenAnimated && (
           <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -52,7 +52,7 @@ export function Aside() {
         >
           Головна
         </AsideItem>
-        {user?.role === UserRole.USER && (
+        {user?.role === EUserRole.USER && (
           <>
             <AsideItem
               href={ROUTES.BOOKS}
@@ -70,7 +70,8 @@ export function Aside() {
             >
               Моя бібліотека
             </AsideItem>
-            {user.isAuthor && (
+            {(user.userType === EUserType.AUTHOR ||
+              user.userType === EUserType.PUBLISHER) && (
               <AsideItem
                 href={ROUTES.USER_PUBLISHED_BOOKS}
                 isAsideOpen={isAsideOpen}
@@ -82,7 +83,7 @@ export function Aside() {
             )}
           </>
         )}
-        {user?.role === UserRole.ADMIN && (
+        {user?.role === EUserRole.ADMIN && (
           <>
             <AsideItem
               href={ROUTES.BOOKS}
@@ -113,7 +114,7 @@ export function Aside() {
             {article.metadata.name}
           </AsideItem>
         ))} */}
-        <div className="border-b border-default-200 my-2 -mx-4" />
+        <div className="-mx-4 my-2 border-b border-default-200" />
         <AnimatePresence>
           {isAsideOpenAnimated && (
             <motion.div

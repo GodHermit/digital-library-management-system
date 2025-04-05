@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { EyeIcon, PencilIcon, UserPenIcon, UsersIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -81,7 +81,7 @@ export function UsersPage() {
   return (
     <>
       <h1>Користувачі</h1>
-      <div className="grid grid-cols-1 mb-6 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <WidgetCard
           label="Кількість користувачів"
           value={rows.length}

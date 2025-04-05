@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { RotateCcwIcon, Trash2Icon } from 'lucide-react';
 import { ColorModeSettings } from './coponents/ColorModeSettings';
 import { FontSizeSettings } from './coponents/FontSizeSettings';
@@ -21,8 +21,8 @@ export function SettingsPage() {
       <h1>Settings</h1>
       <ColorModeSettings />
       <FontSizeSettings />
-      <h2 className="text-danger mb-2">Danger zone</h2>
-      <div className="border-2 border-danger rounded-lg flex flex-col divide-y-2 divide-danger">
+      <h2 className="mb-2 text-danger">Danger zone</h2>
+      <div className="flex flex-col divide-y-2 divide-danger rounded-lg border-2 border-danger">
         <div className="flex items-center p-4">
           <div className="flex flex-col">
             <b>Restore default settings</b>

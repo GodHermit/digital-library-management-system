@@ -1,5 +1,5 @@
 import { CodeBlock } from '@/components/CodeBlock';
-import { Image, ImageProps, Link, LinkProps } from '@nextui-org/react';
+import { Image, ImageProps, Link, LinkProps } from "@heroui/react";
 import { Children, isValidElement } from 'react';
 import { Helmet } from 'react-helmet';
 import ReactMarkdown from 'react-markdown';
@@ -19,7 +19,7 @@ export function Book() {
         <title>{book.name}</title>
       </Helmet>
       <ReactMarkdown
-        className="prose prose-neutral prose-pre:p-0 prose-pre:bg-transparent dark:prose-invert"
+        className="prose prose-neutral dark:prose-invert prose-pre:bg-transparent prose-pre:p-0"
         remarkPlugins={[remarkFrontmatter, remarkAlert]}
         components={{
           a({ children, href, ...props }) {

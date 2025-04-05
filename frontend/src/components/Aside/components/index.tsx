@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@nextui-org/react';
+import { Button, Tooltip } from "@heroui/react";
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';

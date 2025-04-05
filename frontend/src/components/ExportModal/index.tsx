@@ -9,7 +9,7 @@ import {
   Select,
   SelectItem,
   Switch,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useForm, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import {
@@ -125,7 +125,7 @@ export function ExportModal({ isOpen, onOpenChange }: ExportModalProps) {
                 >
                   Include media
                 </Switch>
-                <div className="text-tiny text-foreground-400 flex p-1 relative flex-col gap-1.5">
+                <div className="relative flex flex-col gap-1.5 p-1 text-tiny text-foreground-400">
                   This will increase the size of the exported file
                 </div>
               </div>

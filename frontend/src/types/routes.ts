@@ -8,9 +8,11 @@ export enum ROUTES {
 
   BOOKS = '/books',
   ADD_BOOK = '/books/new',
-  BOOK = "/:bookId",
+  BOOK = '/:bookId',
 
   USERS = '/users',
   USER = '/@me',
   USER_PUBLISHED_BOOKS = '/@me/published-books',
+
+  DEVELOPMENT_HELPER = '/development-helper',
 }

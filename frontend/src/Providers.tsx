@@ -1,4 +1,5 @@
-import { NextUIProvider } from '@nextui-org/react';
+import { ToastProvider } from '@heroui/toast';
+import { HeroUIProvider } from '@heroui/react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { WagmiProvider } from '@privy-io/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -21,11 +22,12 @@ export function Providers({ children }: ProvidersProps) {
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
-          <NextUIProvider navigate={navigate} useHref={useHref}>
+          <HeroUIProvider navigate={navigate} useHref={useHref} locale="uk-UA">
             <NextThemesProvider attribute="class">
               {children}
+              <ToastProvider placement="top-right" />
             </NextThemesProvider>
-          </NextUIProvider>
+          </HeroUIProvider>
         </WagmiProvider>
       </QueryClientProvider>
     </PrivyProvider>

@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
   Tooltip,
   User,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { usePrivy } from '@privy-io/react-auth';
 import {
   BookIcon,
@@ -39,13 +39,13 @@ export function UserButton() {
     user: privyUser,
     login,
     logout,
-    connectWallet,
+    linkWallet,
   } = usePrivy();
   // Disable login when Privy is not ready or the user is already authenticated
   const isLoginDisabled = !isReady || (isReady && isAuthenticated);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_copiedText, copy] = useCopyToClipboard();
-  const user = useUserStore(useShallow((s) => s.user));
+  const user = useUserStore(useShallow(s => s.user));
 
   if (!isAuthenticated) {
     return (
@@ -77,14 +77,18 @@ export function UserButton() {
         backdrop="blur"
       >
         <PopoverTrigger>
-          <Button className="relative aria-expanded:z-[99999999]" isIconOnly>
+          <Button
+            className="relative aria-expanded:z-[99999999]"
+            isIconOnly
+            aria-label="User"
+          >
             <UserIcon />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="items-start w-screen max-w-[21rem] p-2">
+        <PopoverContent className="w-screen max-w-[21rem] items-start p-2">
           <User
             name={
-              <div className="flex flex-col gap-1 items-start">
+              <div className="flex flex-col items-start gap-1">
                 {privyUser?.email?.address && (
                   <div className="font-bold">{privyUser?.email?.address}</div>
                 )}
@@ -93,9 +97,9 @@ export function UserButton() {
                     variant="flat"
                     color="primary"
                     size="sm"
-                    className="py-0 px-2 h-auto"
+                    className="h-auto px-2 py-0"
                     startContent={<Link2Icon width={16} height={16} />}
-                    onPress={() => connectWallet()}
+                    onPress={() => linkWallet()}
                   >
                     Підключити гаманець
                   </Button>
@@ -104,7 +108,7 @@ export function UserButton() {
                   <div className="flex gap-1">
                     <Tooltip placement="bottom" content={address}>
                       <span
-                        className="text-xs cursor-pointer"
+                        className="cursor-pointer text-xs"
                         onClick={handleCopyAddress}
                       >
                         {formatAddress(address)}
@@ -119,7 +123,7 @@ export function UserButton() {
                         variant="light"
                         color="danger"
                         size="sm"
-                        className="py-0 px-0 h-auto"
+                        className="h-auto p-0"
                         isIconOnly
                         startContent={<Link2OffIcon width={16} height={16} />}
                         onPress={() => disconnect()}
@@ -134,7 +138,7 @@ export function UserButton() {
               icon: <UserIcon />,
             }}
           />
-          <Divider className="mt-2 mb-1" />
+          <Divider className="mb-1 mt-2" />
           <Listbox variant="flat" className="px-0">
             <ListboxItem
               key={ROUTES.USER}
@@ -146,20 +150,6 @@ export function UserButton() {
             >
               Моя бібліотека
             </ListboxItem>
-            {user?.isAuthor ? (
-              <ListboxItem
-                key="publishedBooks"
-                as={Link}
-                // @ts-expect-error - `to` prop is missing
-                to={ROUTES.USER_PUBLISHED_BOOKS}
-                startContent={<BookUpIcon width={16} height={16} />}
-                onPress={() => setIsOpen(false)}
-              >
-                Опубліковані книги
-              </ListboxItem>
-            ) : (
-              <></>
-            )}
             <ListboxItem
               key="mySettings"
               as={Link}

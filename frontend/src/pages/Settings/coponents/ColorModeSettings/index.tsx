@@ -1,6 +1,6 @@
 import { useSettingsStore } from '@/stores/settings';
 import { COLOR_MODE } from '@/types/settings';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from "@heroui/react";
 import { useShallow } from 'zustand/shallow';
 
 export function ColorModeSettings() {

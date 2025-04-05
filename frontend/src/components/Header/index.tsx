@@ -1,5 +1,5 @@
 import { useSettingsStore } from '@/stores/settings';
-import { Button, Kbd, Tooltip } from '@nextui-org/react';
+import { Button, Kbd, Tooltip } from "@heroui/react";
 import { PanelLeftCloseIcon, PanelLeftIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useShallow } from 'zustand/shallow';
@@ -17,7 +17,7 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center gap-2 py-4 pr-4 bg-default-50 print:hidden">
+    <header className="flex items-center gap-2 bg-default-50 py-4 pr-4 print:hidden">
       <Tooltip
         placement="bottom"
         delay={2000}

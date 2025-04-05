@@ -3,11 +3,13 @@ import { Header } from '@/components/Header';
 import { BRAND_NAME } from '@/constants/brand';
 import { useColorMode } from '@/hooks/useColorMode';
 import { OnboardingPage } from '@/pages/Onboarding';
+import { userService } from '@/services/userService';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { COLOR_MODE } from '@/types/settings';
 import { fontSizeToPX } from '@/utils/settings';
-import { ScrollShadow } from '@nextui-org/react';
+import { ScrollShadow } from "@heroui/react";
+import { useLinkAccount, useLogin } from '@privy-io/react-auth';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Toaster } from 'react-hot-toast';
@@ -15,9 +17,21 @@ import { Outlet } from 'react-router-dom';
 import { useShallow } from 'zustand/shallow';
 
 export function GeneralLayout() {
-  const [fontSize] = useSettingsStore(useShallow((s) => [s.fontSize]));
+  const [fontSize] = useSettingsStore(useShallow(s => [s.fontSize]));
   const colorMode = useColorMode();
-  const user = useUserStore(useShallow((s) => s.user));
+  const user = useUserStore(useShallow(s => s.user));
+
+  useLogin({
+    onComplete: async () => {
+      await userService.registerUser();
+    },
+  });
+
+  useLinkAccount({
+    onSuccess: async () => {
+      await userService.registerUser();
+    },
+  })
 
   useEffect(() => {
     const isDarkMode = colorMode === COLOR_MODE.DARK;
@@ -43,24 +57,20 @@ export function GeneralLayout() {
     };
   }, [fontSize]);
 
-  useEffect(() => {
-    // articlesService.getArticles();
-  }, []);
-
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <Helmet titleTemplate={`%s | ${BRAND_NAME}`} defaultTitle={BRAND_NAME} />
-      {user?.isOnboardingFinished ? (
+      {!user || user.isOnboardingFinished ? (
         <>
           <Aside />
           <div className="flex grow flex-col">
             <Header />
             <ScrollShadow
               as="main"
-              className="flex p-8 bg-default-100 grow rounded-tl-xl print:overflow-visible"
+              className="flex grow rounded-tl-xl bg-default-100 p-8 print:overflow-visible"
               offset={32}
             >
-              <article className="bg-default-50 rounded-lg p-8 grow h-max max-w-none prose prose-neutral prose-pre:p-0 prose-pre:bg-transparent dark:prose-invert">
+              <article className="prose prose-neutral h-max max-w-none grow rounded-lg bg-default-50 p-8 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0">
                 <Outlet />
               </article>
             </ScrollShadow>

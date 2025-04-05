@@ -13,19 +13,19 @@ body {
 }
 
 #privy-modal-content {
-  --tw-shadow: var(--nextui-box-shadow-small);
-  --tw-shadow-colored: var(--nextui-box-shadow-small);
+  --tw-shadow: var(--heroui-box-shadow-small);
+  --tw-shadow-colored: var(--heroui-box-shadow-small);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  background: hsl(var(--nextui-content1) / var(--nextui-content1-opacity, 1));
-  border-radius: var(--nextui-radius-large);
+  background: hsl(var(--heroui-content1) / var(--heroui-content1-opacity, 1));
+  border-radius: var(--heroui-radius-large);
   clip: rect(0px, 0px, 0px, 0px);
 }
 
 #privy-modal-content * {
   color: hsl(
-    var(--nextui-foreground) /
-      var(--nextui-foreground-opacity, var(--tw-text-opacity))
+    var(--heroui-foreground) /
+      var(--heroui-foreground-opacity, var(--tw-text-opacity))
   ) !important;
 }
 

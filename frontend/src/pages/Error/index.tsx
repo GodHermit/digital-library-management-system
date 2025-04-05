@@ -1,5 +1,5 @@
 import { ROUTES } from '@/types/routes';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { FrownIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router-dom';
@@ -31,15 +31,15 @@ export function ErrorPage() {
   }, [isErrorResponse, error]);
 
   return (
-    <main className="flex justify-center items-center min-h-screen">
-      <div className="flex justify-center items-center gap-12 flex-col">
-        <div className="p-6 bg-default-100 rounded-2xl">
+    <main className="flex min-h-screen items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-12">
+        <div className="rounded-2xl bg-default-100 p-6">
           <FrownIcon width={40} height={40} />
         </div>
         <h1 className="flex items-center gap-2 text-4xl font-bold">
           {isErrorResponse && error.status} | {errorMessage}
         </h1>
-        <div className="flex flex-col gap-2 w-full max-w-64">
+        <div className="flex w-full max-w-64 flex-col gap-2">
           <Button
             variant="solid"
             color="primary"

@@ -16,4 +16,7 @@ export const privyConfig: PrivyClientConfig = {
   intl: {
     defaultCountry: 'UA',
   },
+  embeddedWallets: {
+    createOnLogin: 'users-without-wallets',
+  },
 };

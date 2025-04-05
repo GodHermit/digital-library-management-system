@@ -10,7 +10,7 @@ interface MessageCodeBlockProps {
 export const CodeBlock: FC<MessageCodeBlockProps> = memo(
   ({ language, value }) => {
     return (
-      <div className="relative overflow-hidden bg-[#282C34] font-sans rounded-xl">
+      <div className="relative overflow-hidden rounded-xl bg-[#282C34] font-sans">
         {language && (
           <div className="flex items-center justify-between bg-[#21252B] px-3 py-1.5 text-foreground">
             <div className="text-xs lowercase">{language}</div>

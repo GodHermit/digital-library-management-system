@@ -1,7 +1,7 @@
 import { TARGET_CHAIN, wagmiConfig } from '@/configs/wagmi';
 import { PLATFORM_WALLET } from '@/constants';
 import { DONATELLO_PAGE } from '@/constants/brand';
-import { Button, Form, Input } from '@nextui-org/react';
+import { Button, Form, Input } from "@heroui/react";
 import { usePrivy } from '@privy-io/react-auth';
 import { HeartIcon } from 'lucide-react';
 import { FormEvent, useState } from 'react';

@@ -8,8 +8,8 @@ interface IWidgetCardProps {
 
 export function WidgetCard({ label, value, valueIcon }: IWidgetCardProps) {
   return (
-    <div className="flex w-full flex-col gap-2 rounded-medium p-3 transition-colors bg-default-100">
-      <span className="flex gap-2 text-small font-medium transition-colors text-default-500">
+    <div className="flex w-full flex-col gap-2 rounded-medium bg-default-100 p-3 transition-colors">
+      <span className="flex gap-2 text-small font-medium text-default-500 transition-colors">
         {label}
       </span>
       <div className="flex items-center gap-x-3">
