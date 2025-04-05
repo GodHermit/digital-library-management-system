@@ -4,7 +4,12 @@ import { BookEntity } from '../entities/book.entity';
 export const BOOKS_PAGINATION: PaginateConfig<BookEntity> = {
   sortableColumns: ['title', 'publishedAt'],
   defaultSortBy: [['title', 'ASC']],
-  searchableColumns: ['title', 'authors.fullName'],
+  searchableColumns: [
+    'title',
+    'description',
+    'genres.name',
+    'authors.fullName',
+  ],
   filterableColumns: {
     title: true,
     authors: true,

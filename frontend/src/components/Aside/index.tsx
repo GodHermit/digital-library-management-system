@@ -11,6 +11,7 @@ import {
   DollarSignIcon,
   HomeIcon,
   LibraryBigIcon,
+  ShoppingCartIcon,
   UsersIcon,
 } from 'lucide-react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -99,21 +100,18 @@ export function Aside() {
               isAsideOpenAnimated={isAsideOpenAnimated}
               icon={<UsersIcon />}
             >
-              Користувачі <span className="text-default-500">/ Автори</span>
+              Користувачі
+            </AsideItem>
+            <AsideItem
+              href={ROUTES.ORDERS}
+              isAsideOpen={isAsideOpen}
+              isAsideOpenAnimated={isAsideOpenAnimated}
+              icon={<ShoppingCartIcon />}
+            >
+              Замовлення
             </AsideItem>
           </>
         )}
-        {/* {articles.map((article, i) => (
-          <AsideItem
-            key={i}
-            href={article.metadata.slug}
-            isAsideOpen={isAsideOpen}
-            isAsideOpenAnimated={isAsideOpenAnimated}
-            icon={<DynamicLucideIcon name={article.metadata.icon} />}
-          >
-            {article.metadata.name}
-          </AsideItem>
-        ))} */}
         <div className="-mx-4 my-2 border-b border-default-200" />
         <AnimatePresence>
           {isAsideOpenAnimated && (

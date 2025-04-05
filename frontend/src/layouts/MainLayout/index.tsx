@@ -8,8 +8,9 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { COLOR_MODE } from '@/types/settings';
 import { fontSizeToPX } from '@/utils/settings';
-import { ScrollShadow } from "@heroui/react";
+import { ScrollShadow } from '@heroui/react';
 import { useLinkAccount, useLogin } from '@privy-io/react-auth';
+import clsx from 'clsx';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Toaster } from 'react-hot-toast';
@@ -31,7 +32,7 @@ export function GeneralLayout() {
     onSuccess: async () => {
       await userService.registerUser();
     },
-  })
+  });
 
   useEffect(() => {
     const isDarkMode = colorMode === COLOR_MODE.DARK;
@@ -58,7 +59,12 @@ export function GeneralLayout() {
   }, [fontSize]);
 
   return (
-    <div className="flex min-h-screen">
+    <div
+      className={clsx(
+        'flex min-h-screen',
+        user?.isOnboardingFinished && 'h-screen'
+      )}
+    >
       <Helmet titleTemplate={`%s | ${BRAND_NAME}`} defaultTitle={BRAND_NAME} />
       {!user || user.isOnboardingFinished ? (
         <>

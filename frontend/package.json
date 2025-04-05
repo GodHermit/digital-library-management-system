@@ -20,6 +20,7 @@
     "@tanstack/react-query": "^5.62.3",
     "axios": "^1.7.7",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "framer-motion": "^11.13.1",
     "html-to-pdf-js": "^0.9.3",
     "jszip": "^3.10.1",

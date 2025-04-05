@@ -27,3 +27,9 @@ export interface IUser {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IPublicUser {
+  id: string;
+  email?: string;
+  fullName?: string;
+}

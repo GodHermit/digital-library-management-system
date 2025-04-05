@@ -1,8 +1,8 @@
 import { WidgetCard } from '@/components/Widget';
-import { TABLE_ROWS_PER_PAGE } from '@/constants';
-import { SECOND } from '@/constants/time';
+import { userService } from '@/services/userService';
+import { ITableRows } from '@/types/table';
+import { IUser } from '@/types/user';
 import {
-  Button,
   getKeyValue,
   Pagination,
   Spinner,
@@ -12,51 +12,33 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  Tooltip,
-} from "@heroui/react";
-import { EyeIcon, PencilIcon, UserPenIcon, UsersIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+} from '@heroui/react';
+import dayjs from 'dayjs';
+import { UsersIcon } from 'lucide-react';
+import { useState } from 'react';
 import useSWR from 'swr';
 
-const rows = [
+const columns: ITableRows<IUser> = [
   {
-    key: '1',
-    name: 'Tony Reichert',
-    role: 'CEO',
-    status: 'Active',
+    key: 'id',
+    label: 'Ідентифікатор',
   },
   {
-    key: '2',
-    name: 'Zoey Lang',
-    role: 'Technical Lead',
-    status: 'Paused',
-  },
-  {
-    key: '3',
-    name: 'Jane Fisher',
-    role: 'Senior Developer',
-    status: 'Active',
-  },
-  {
-    key: '4',
-    name: 'William Howard',
-    role: 'Community Manager',
-    status: 'Vacation',
-  },
-];
-
-const columns = [
-  {
-    key: 'name',
+    key: 'fullName',
     label: 'Імʼя',
+  },
+  {
+    key: 'email',
+    label: 'Електронна пошта',
   },
   {
     key: 'role',
     label: 'Роль',
   },
   {
-    key: 'actions',
-    label: 'Дії',
+    key: 'createdAt',
+    label: 'Дата реєстрації',
+    render: item => dayjs(item.createdAt).format('DD.MM.YYYY HH:mm'),
   },
 ];
 
@@ -65,18 +47,13 @@ export function UsersPage() {
 
   const { data, isLoading } = useSWR(
     `/users?page=${page}`,
-    async () => {
-      await new Promise((resolve) => setTimeout(resolve, SECOND));
-      return rows;
-    },
+    async () => userService.getUsers(page),
     {
       keepPreviousData: true,
     }
   );
 
-  const pages = useMemo(() => {
-    return Math.ceil(rows.length / TABLE_ROWS_PER_PAGE);
-  }, []);
+  const pages = data?.meta.totalPages ?? 0;
 
   return (
     <>
@@ -84,13 +61,8 @@ export function UsersPage() {
       <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <WidgetCard
           label="Кількість користувачів"
-          value={rows.length}
+          value={data?.meta.totalItems}
           valueIcon={<UsersIcon width={24} height={24} />}
-        />
-        <WidgetCard
-          label="Кількість авторів"
-          value={0}
-          valueIcon={<UserPenIcon width={24} height={24} />}
         />
       </div>
       <Table
@@ -107,41 +79,31 @@ export function UsersPage() {
                 color="primary"
                 page={page}
                 total={pages}
-                onChange={(page) => setPage(page)}
+                onChange={page => setPage(page)}
               />
             </div>
           ) : null
         }
       >
         <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
+          {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
         </TableHeader>
         <TableBody
-          items={data ?? []}
+          items={data?.data ?? []}
           loadingContent={<Spinner />}
           loadingState={isLoading ? 'loading' : 'idle'}
         >
-          {(item) => (
-            <TableRow key={item?.key}>
-              {(columnKey) => (
+          {item => (
+            <TableRow key={item?.id}>
+              {columnKey => (
                 <TableCell>
-                  {columnKey !== 'actions' && getKeyValue(item, columnKey)}
-                  {columnKey === 'actions' && (
-                    <>
-                      <Tooltip content="Переглянути" placement="bottom">
-                        <Button variant="light" isIconOnly size="sm">
-                          <EyeIcon width={16} height={16} />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Редагувати" placement="bottom">
-                        <Button variant="light" isIconOnly size="sm">
-                          <PencilIcon width={16} height={16} />
-                        </Button>
-                      </Tooltip>
-                    </>
-                  )}
+                  {columnKey !== 'actions' &&
+                  columns.find(c => c.key === columnKey)?.render
+                    ? columns
+                        .find(c => c.key === columnKey)
+                        ?.render?.(getKeyValue(item, columnKey))
+                    : getKeyValue(item, columnKey)}
+                  {columnKey === 'actions' && <></>}
                 </TableCell>
               )}
             </TableRow>

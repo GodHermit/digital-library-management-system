@@ -1,6 +1,5 @@
 export enum ROUTES {
   HOME = '/',
-  ARTICLE = '/:articleId',
   SETTINGS = '/settings',
   FAQ = '/faq',
   CREDITS = '/credits',
@@ -8,11 +7,18 @@ export enum ROUTES {
 
   BOOKS = '/books',
   ADD_BOOK = '/books/new',
-  BOOK = '/:bookId',
+  BOOK = '/:id',
 
   USERS = '/users',
   USER = '/@me',
   USER_PUBLISHED_BOOKS = '/@me/published-books',
+
+  ORDERS = '/orders',
+  ORDER = '/orders/:id',
+
+  SHOPPING_CART = '/shopping-cart',
+  CHECKOUT = '/checkout',
+  CHECKOUT_ORDER = '/checkout/:id',
 
   DEVELOPMENT_HELPER = '/development-helper',
 }

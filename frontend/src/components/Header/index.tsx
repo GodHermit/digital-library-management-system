@@ -1,14 +1,21 @@
 import { useSettingsStore } from '@/stores/settings';
-import { Button, Kbd, Tooltip } from "@heroui/react";
-import { PanelLeftCloseIcon, PanelLeftIcon, SearchIcon } from 'lucide-react';
+import { Button, Kbd, Tooltip } from '@heroui/react';
+import {
+  PanelLeftCloseIcon,
+  PanelLeftIcon,
+  SearchIcon,
+  ShoppingCartIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { SearchModal } from '../SearchModal';
 import { UserButton } from './components/UserButton';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '@/types/routes';
 
 export function Header() {
   const [isAsideOpen, setIsAsideOpen] = useSettingsStore(
-    useShallow((s) => [s.isAsideOpen, s.setIsAsideOpen])
+    useShallow(s => [s.isAsideOpen, s.setIsAsideOpen])
   );
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
@@ -32,7 +39,7 @@ export function Header() {
         delay={1000}
         content={
           <div className="flex items-center gap-2">
-            Search <Kbd keys={['command']}>K</Kbd>
+            Пошук <Kbd keys={['command']}>K</Kbd>
           </div>
         }
       >
@@ -44,13 +51,17 @@ export function Header() {
           <SearchIcon />
         </Button>
       </Tooltip>
-      {/* <Tooltip placement="bottom" delay={1000} content="Settings">
-        <Button as={Link} to={ROUTES.SETTINGS} isIconOnly>
-          <SettingsIcon />
+
+      <Tooltip
+        placement="bottom"
+        delay={1000}
+        content="Кошик покупок"
+      >
+        <Button isIconOnly as={Link} to={ROUTES.SHOPPING_CART}>
+          <ShoppingCartIcon />
         </Button>
-      </Tooltip> */}
+      </Tooltip>
       <UserButton />
-      {/* <HeaderMenu /> */}
       <SearchModal
         isOpen={isSearchModalOpen}
         onOpenChange={setIsSearchModalOpen}

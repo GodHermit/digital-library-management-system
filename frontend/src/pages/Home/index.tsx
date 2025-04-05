@@ -1,17 +1,22 @@
-import { BookGalleryItem } from "@/components/BookGalleryItem";
-// import { useUserStore } from '@/stores/user';
-// import { useShallow } from 'zustand/shallow';
+import { BookGalleryItem } from '@/components/BookGalleryItem';
+import { useGetBooksQuery } from '@/hooks/useGetBooksQuery';
 
 export function HomePage() {
-  // const user = useUserStore(useShallow((s) => s.user));
+  const { data, isLoading } = useGetBooksQuery({
+    page: 1,
+    limit: 10,
+  });
 
   return (
     <>
       <h1>Головна</h1>
-      <h2>Нещодавно додані</h2>
       <section className="flex flex-wrap justify-between gap-x-4 gap-y-12">
-        {Array.from({ length: 20 }).map((_, index) => (
-          <BookGalleryItem key={index} />
+        {isLoading &&
+          Array.from({ length: 10 }).map((_, index) => (
+            <BookGalleryItem key={index} isLoading />
+          ))}
+        {data?.data.map((book, index) => (
+          <BookGalleryItem key={index} book={book} isLoading={isLoading} />
         ))}
       </section>
     </>

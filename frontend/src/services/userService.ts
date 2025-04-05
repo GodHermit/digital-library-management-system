@@ -3,6 +3,7 @@ import { userStore } from '@/stores/user';
 import { IUser } from '@/types/user';
 import { addErrorToast } from '@/utils/errorToast';
 import { $api } from '.';
+import { IPaginate } from '@/types/paginate';
 
 export class UserService {
   async registerUser() {
@@ -41,6 +42,18 @@ export class UserService {
       addErrorToast(error);
       throw error;
     }
+  }
+
+  async getUsers(page: number) {
+    const url = '/api/users';
+    const { data } = await $api.get<IPaginate<IUser>>(url, {
+      params: {
+        page,
+        limit: 10,
+      },
+    });
+
+    return data;
   }
 }
 
