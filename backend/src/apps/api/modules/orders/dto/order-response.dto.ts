@@ -32,6 +32,12 @@ export class OrderResponseDto {
   @ApiProperty({ type: OrderTransactionResponseDto, isArray: true })
   transactions: OrderTransactionResponseDto[];
 
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty({ required: false })
+  updatedAt?: Date;
+
   constructor(order: OrderEntity) {
     this.id = order.id;
     this.orderedByUserId = order.orderedByUserId;
@@ -50,5 +56,7 @@ export class OrderResponseDto {
       order.transactions?.map(
         (transaction) => new OrderTransactionResponseDto(transaction),
       ) || [];
+    this.createdAt = order.createdAt;
+    this.updatedAt = order.updatedAt;
   }
 }

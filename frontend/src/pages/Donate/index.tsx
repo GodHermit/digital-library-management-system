@@ -1,6 +1,7 @@
 import { TARGET_CHAIN, wagmiConfig } from '@/configs/wagmi';
 import { PLATFORM_WALLET } from '@/constants';
 import { DONATELLO_PAGE } from '@/constants/brand';
+import { addErrorToast } from '@/utils/errorToast';
 import { Button, Form, Input } from "@heroui/react";
 import { usePrivy } from '@privy-io/react-auth';
 import { HeartIcon } from 'lucide-react';
@@ -41,16 +42,7 @@ export function DonatePage() {
       });
       toast.success('Дякуємо за пожертву!');
     } catch (error) {
-      console.error(error);
-      if (error instanceof Error) {
-        toast.error(() => (
-          <div>
-            <b>Помилка при пожертві</b>
-            <br />
-            {error.message}
-          </div>
-        ));
-      }
+      addErrorToast(error);
     } finally {
       setIsSubmitting(false);
     }

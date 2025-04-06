@@ -1,8 +1,15 @@
 import { addToast } from '@heroui/toast';
 import { AxiosError } from 'axios';
+import { BaseError } from 'viem';
 
 export const addErrorToast = (error: unknown) => {
-  if (error instanceof AxiosError) {
+  if (error instanceof BaseError) {
+    addToast({
+      title: error.shortMessage as string,
+      severity: 'danger',
+      color: 'danger',
+    });
+  } else if (error instanceof AxiosError) {
     addToast({
       title: error.message,
       description: error.response?.data.message,

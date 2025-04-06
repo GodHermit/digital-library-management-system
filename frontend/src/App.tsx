@@ -13,6 +13,7 @@ import { DevelopmentHelper } from './pages/DevelopmentHelper';
 import { ShoppingCart } from './pages/ShoppingCart';
 import { useEffect } from 'react';
 import { priceService } from './services/priceService';
+import { CheckoutPage } from './pages/Checkout';
 
 const router = createBrowserRouter([
   {
@@ -44,10 +45,25 @@ const router = createBrowserRouter([
     ],
     errorElement: <ErrorPage />,
   },
+  {
+    path: ROUTES.CHECKOUT,
+    element: (
+      <Providers>
+        <CheckoutPage />
+      </Providers>
+    ),
+  },
+  {
+    path: ROUTES.CHECKOUT_ORDER,
+    element: (
+      <Providers>
+        <CheckoutPage />
+      </Providers>
+    ),
+  },
 ]);
 
 function App() {
-
   useEffect(() => {
     priceService.fetchPrice();
   }, []);
