@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { ROUTES } from '@/types/routes';
 import { formatAddress } from '@/utils/address';
 import {
+  addToast,
   Button,
   Divider,
   Listbox,
@@ -12,11 +13,10 @@ import {
   PopoverTrigger,
   Tooltip,
   User,
-} from "@heroui/react";
+} from '@heroui/react';
 import { usePrivy } from '@privy-io/react-auth';
 import {
   BookIcon,
-  BookUpIcon,
   Link2Icon,
   Link2OffIcon,
   LogOutIcon,
@@ -24,8 +24,7 @@ import {
   UserIcon,
 } from 'lucide-react';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useShallow } from 'zustand/shallow';
 
@@ -54,7 +53,7 @@ export function UserButton() {
         color="primary"
         onPress={() => login()}
       >
-        Log in
+        Увійти
       </Button>
     );
   }
@@ -65,7 +64,7 @@ export function UserButton() {
     }
 
     copy(address);
-    toast.success('Адресу скопійовано');
+    addToast({ title: 'Адресу скопійовано' });
   };
 
   return (

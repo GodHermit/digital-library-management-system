@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Toaster } from 'react-hot-toast';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { useShallow } from 'zustand/shallow';
 
 export function GeneralLayout() {

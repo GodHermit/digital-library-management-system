@@ -1,5 +1,5 @@
 import { useSettingsStore } from '@/stores/settings';
-import { Button, Kbd, Tooltip } from '@heroui/react';
+import { Badge, Button, Kbd, Tooltip } from '@heroui/react';
 import {
   PanelLeftCloseIcon,
   PanelLeftIcon,
@@ -10,14 +10,18 @@ import { useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { SearchModal } from '../SearchModal';
 import { UserButton } from './components/UserButton';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { ROUTES } from '@/types/routes';
+import { useShoppingCartStore } from '@/stores/soppingCart';
 
 export function Header() {
   const [isAsideOpen, setIsAsideOpen] = useSettingsStore(
     useShallow(s => [s.isAsideOpen, s.setIsAsideOpen])
   );
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const totalItemsInCart = useShoppingCartStore(
+    useShallow(s => s.items.length)
+  );
 
   const toggleAside = () => {
     setIsAsideOpen(!isAsideOpen);
@@ -52,15 +56,13 @@ export function Header() {
         </Button>
       </Tooltip>
 
-      <Tooltip
-        placement="bottom"
-        delay={1000}
-        content="Кошик покупок"
-      >
-        <Button isIconOnly as={Link} to={ROUTES.SHOPPING_CART}>
-          <ShoppingCartIcon />
-        </Button>
-      </Tooltip>
+      <Badge color="primary" content={totalItemsInCart}>
+        <Tooltip placement="bottom" delay={1000} content="Кошик покупок">
+          <Button isIconOnly as={Link} to={ROUTES.SHOPPING_CART}>
+            <ShoppingCartIcon />
+          </Button>
+        </Tooltip>
+      </Badge>
       <UserButton />
       <SearchModal
         isOpen={isSearchModalOpen}

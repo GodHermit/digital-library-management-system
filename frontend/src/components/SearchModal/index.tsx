@@ -15,7 +15,7 @@ import {
 } from '@heroui/react';
 import { FrownIcon, SearchIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useDebounceValue } from 'usehooks-ts';
 
 interface ShareModalProps {

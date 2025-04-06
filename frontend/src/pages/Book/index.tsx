@@ -1,97 +1,119 @@
-import { CodeBlock } from '@/components/CodeBlock';
-import { Image, ImageProps, Link, LinkProps } from "@heroui/react";
-import { Children, isValidElement } from 'react';
+import { AddToLibrary } from '@/components/AddToLibrary';
+import { useGetBookQuery } from '@/hooks/useGetBookQuery';
+import { useShoppingCartStore } from '@/stores/soppingCart';
+import { Button, Chip, Image } from '@heroui/react';
+import dayjs from 'dayjs';
+import uk from 'dayjs/locale/uk';
+import { CheckIcon, ShoppingCartIcon } from 'lucide-react';
 import { Helmet } from 'react-helmet';
-import ReactMarkdown from 'react-markdown';
-import remarkFrontmatter from 'remark-frontmatter';
-import { remarkAlert } from 'remark-github-blockquote-alert';
-import 'remark-github-blockquote-alert/alert.css';
+import { data, useParams } from 'react-router';
+import { useShallow } from 'zustand/shallow';
+dayjs.locale(uk);
 
 export function Book() {
-  const book = {
-    name: 'Book',
-    description: `# Book 📚`
-  };
+  const { id } = useParams();
+  const { data: book, isLoading } = useGetBookQuery(id);
+  const [isInCart, addItem] = useShoppingCartStore(
+    useShallow(s => [s.isInCart(book), s.addItem])
+  );
+
+  if (!book && !isLoading) {
+    throw data('Book not found', { status: 404 });
+  }
 
   return (
     <>
       <Helmet>
-        <title>{book.name}</title>
+        <title>{book?.title}</title>
       </Helmet>
-      <ReactMarkdown
-        className="prose prose-neutral dark:prose-invert prose-pre:bg-transparent prose-pre:p-0"
-        remarkPlugins={[remarkFrontmatter, remarkAlert]}
-        components={{
-          a({ children, href, ...props }) {
-            const isExternal = !href?.startsWith(window.location.origin);
-            return (
-              <Link
-                {...(props as LinkProps)}
-                href={href}
-                className="underline"
-                target={isExternal ? '_blank' : undefined}
-                color="foreground"
-                showAnchorIcon={isExternal}
-                rel={isExternal ? 'noopener noreferrer' : undefined}
-              >
-                {children}
-              </Link>
-            );
-          },
-
-          code({ className, children, ...props }) {
-            const childArray = Children.toArray(children);
-            const firstChild = childArray[0] as React.ReactElement;
-            const firstChildAsString = isValidElement(firstChild)
-              ? (firstChild as React.ReactElement).props.children
-              : firstChild;
-
-            if (firstChildAsString === '▍') {
-              return (
-                <span className="mt-1 animate-pulse cursor-default">▍</span>
-              );
+      <div className="flex gap-10">
+        <div className="flex max-w-60 flex-col gap-2">
+          <Image src={book?.coverUrl} className="m-0 max-w-60" radius="sm" />
+          <Button
+            radius="sm"
+            startContent={
+              isInCart ? (
+                <CheckIcon />
+              ) : (
+                <ShoppingCartIcon width={16} height={16} />
+              )
             }
-
-            if (typeof firstChildAsString === 'string') {
-              childArray[0] = firstChildAsString.replace('`▍`', '▍');
-            }
-
-            const match = /language-(\w+)/.exec(className || '');
-
-            if (
-              typeof firstChildAsString === 'string' &&
-              !firstChildAsString.includes('\n')
-            ) {
-              return (
-                <code className={className} {...props}>
-                  {childArray}
-                </code>
-              );
-            }
-
-            return (
-              <CodeBlock
-                key={Math.random()}
-                language={(match && match[1]) || ''}
-                value={String(childArray).replace(/\n$/, '')}
-                {...props}
-              />
-            );
-          },
-          img({ ...props }) {
-            return (
-              <Image
-                removeWrapper
-                loading="lazy"
-                className="block max-h-[50vh]"
-                {...(props as ImageProps)}
-              />
-            );
-          },
-        }}
-      >
-        {book.description}
-      </ReactMarkdown>
+            isDisabled={isInCart}
+            variant={isInCart ? 'flat' : 'solid'}
+            color={isInCart ? 'success' : 'primary'}
+            onPress={() => {
+              if (book) {
+                addItem(book);
+              }
+            }}
+          >
+            {isInCart ? (
+              'Додано в кошик'
+            ) : (
+              <>Купити за {book?.priceInETH} ETH</>
+            )}
+          </Button>
+          {book && <AddToLibrary book={book} />}
+        </div>
+        <div>
+          <h1 className="mb-2">{book?.title}</h1>
+          <div className="m-0 flex flex-wrap gap-2 text-xl text-foreground">
+            {book?.authors.map(a => (
+              <Chip key={a.id} variant="bordered">
+                {a.fullName}
+              </Chip>
+            ))}
+          </div>
+          <p>{book?.description}</p>
+          {book?.genres && book.genres.length > 0 && (
+            <p className="text-sm">
+              <span className="font-bold text-foreground">Жанри:</span>{' '}
+              {book.genres.map(g => g.name).join(', ')}
+            </p>
+          )}
+          <p className="text-sm">
+            <span className="font-bold text-foreground">Опубліковано: </span>
+            {dayjs(book?.publishedAt).format('DD MMMM YYYY')}
+            {book?.publisher && (
+              <>
+                ,{' '}
+                {book.publisher.website ? (
+                  <a
+                    href={book.publisher.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 no-underline hover:text-blue-600"
+                  >
+                    {book.publisher.name}
+                  </a>
+                ) : (
+                  book.publisher.name
+                )}
+              </>
+            )}
+          </p>
+          {book?.language && (
+            <p className="text-sm">
+              <span className="font-bold text-foreground">Мова: </span>
+              {new Intl.DisplayNames(['uk'], { type: 'language' }).of(
+                book?.language
+              )}
+            </p>
+          )}
+          {book?.asin && (
+            <p className="text-sm">
+              <span className="font-bold text-foreground">ASIN: </span>
+              {book?.asin}
+            </p>
+          )}
+          {book?.isbn && (
+            <p className="text-sm">
+              <span className="font-bold text-foreground">ISBN: </span>
+              {book?.isbn}
+            </p>
+          )}
+        </div>
+      </div>
     </>
   );
 }

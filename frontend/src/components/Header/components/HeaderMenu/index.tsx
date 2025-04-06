@@ -13,7 +13,7 @@ import clsx from 'clsx';
 import { EllipsisVerticalIcon, Share2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { BrowserView } from 'react-device-detect';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 
 export function HeaderMenu() {
   const [isOpen, setIsOpen] = useState(false);

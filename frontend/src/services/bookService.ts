@@ -15,6 +15,14 @@ export class BookService {
 
     return data;
   }
+
+  async getBookById(id: string) {
+    const url = `/api/books/${id}`;
+
+    const { data } = await $api.get<IBook>(url);
+
+    return data;
+  }
 }
 
 export const bookService = new BookService();

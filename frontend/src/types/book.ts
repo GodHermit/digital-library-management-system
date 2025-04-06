@@ -16,9 +16,21 @@ export interface IBook {
   seriesId?: string;
   edition?: string;
   format?: string;
+  asin?: string;
+  isbn?: string;
+
+  status?: EStatus;
 }
 
 export interface IGenre {
   id: string;
   name: string;
+}
+
+export enum EStatus {
+  Planning = 'planning',
+  InProgress = 'reading',
+  Done = 'done',
+  ReInProgress = 're-reading',
+  Paused = 'paused',
 }

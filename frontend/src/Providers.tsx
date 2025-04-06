@@ -5,7 +5,7 @@ import { WagmiProvider } from '@privy-io/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactNode } from 'react';
-import { useHref, useNavigate } from 'react-router-dom';
+import { useHref, useNavigate } from 'react-router';
 import { PRIVY_APP_ID, privyConfig } from './configs/privy';
 import { wagmiConfig } from './configs/wagmi';
 
@@ -25,7 +25,7 @@ export function Providers({ children }: ProvidersProps) {
           <HeroUIProvider navigate={navigate} useHref={useHref} locale="uk-UA">
             <NextThemesProvider attribute="class">
               {children}
-              <ToastProvider placement="top-right" />
+              <ToastProvider placement="top-right" toastOffset={80} />
             </NextThemesProvider>
           </HeroUIProvider>
         </WagmiProvider>

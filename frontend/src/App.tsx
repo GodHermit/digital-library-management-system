@@ -1,7 +1,7 @@
 import { GeneralLayout } from '@/layouts/MainLayout';
 import { Book } from '@/pages/Book';
 import { ROUTES } from '@/types/routes';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import { BooksPage } from './pages/Books';
 import { DonatePage } from './pages/Donate';
 import { ErrorPage } from './pages/Error';
@@ -10,6 +10,9 @@ import { SettingsPage } from './pages/Settings';
 import { UsersPage } from './pages/Users';
 import { Providers } from './Providers';
 import { DevelopmentHelper } from './pages/DevelopmentHelper';
+import { ShoppingCart } from './pages/ShoppingCart';
+import { useEffect } from 'react';
+import { priceService } from './services/priceService';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +27,6 @@ const router = createBrowserRouter([
       { path: ROUTES.SETTINGS, element: <SettingsPage /> },
       { path: ROUTES.DONATE, element: <DonatePage /> },
       { path: ROUTES.HOME, element: <Book /> },
-      { path: ROUTES.ARTICLE, element: <Book /> },
       {
         path: ROUTES.BOOKS,
         element: <BooksPage />,
@@ -35,13 +37,22 @@ const router = createBrowserRouter([
       { path: ROUTES.USER, element: <Book /> },
       { path: ROUTES.USER_PUBLISHED_BOOKS, element: <Book /> },
       { path: ROUTES.DEVELOPMENT_HELPER, element: <DevelopmentHelper /> },
+      {
+        path: ROUTES.SHOPPING_CART,
+        element: <ShoppingCart />,
+      },
     ],
     errorElement: <ErrorPage />,
   },
 ]);
 
 function App() {
-  return <RouterProvider fallbackElement={<ErrorPage />} router={router} />;
+
+  useEffect(() => {
+    priceService.fetchPrice();
+  }, []);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;

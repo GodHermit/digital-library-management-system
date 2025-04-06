@@ -1,34 +1,34 @@
 import { ROUTES } from '@/types/routes';
-import { Button } from "@heroui/react";
+import { Button } from '@heroui/react';
 import { FrownIcon } from 'lucide-react';
 import { useMemo } from 'react';
-import { isRouteErrorResponse, Link, useRouteError } from 'react-router-dom';
+import { ErrorResponse, Link, useRouteError } from 'react-router';
 
 export function ErrorPage() {
   const error = useRouteError();
-  const isErrorResponse = isRouteErrorResponse(error);
+  const status =
+    (error as unknown as { init: ErrorResponse }).init.status ||
+    (error as ErrorResponse).status;
 
   const errorMessage = useMemo(() => {
-    if (isErrorResponse) {
-      if (error.status === 404) {
-        return "This page doesn't exist!";
-      }
+    if (status === 404) {
+      return "This page doesn't exist!";
+    }
 
-      if (error.status === 401) {
-        return "You aren't authorized to see this";
-      }
+    if (status === 401) {
+      return "You aren't authorized to see this";
+    }
 
-      if (error.status === 503) {
-        return 'Looks like our API is down';
-      }
+    if (status === 503) {
+      return 'Looks like our API is down';
+    }
 
-      if (error.status === 418) {
-        return '🫖';
-      }
+    if (status === 418) {
+      return '🫖';
     }
 
     return 'Oops... Something went wrong';
-  }, [isErrorResponse, error]);
+  }, [status]);
 
   return (
     <main className="flex min-h-screen items-center justify-center">
@@ -37,7 +37,7 @@ export function ErrorPage() {
           <FrownIcon width={40} height={40} />
         </div>
         <h1 className="flex items-center gap-2 text-4xl font-bold">
-          {isErrorResponse && error.status} | {errorMessage}
+          {status} | {errorMessage}
         </h1>
         <div className="flex w-full max-w-64 flex-col gap-2">
           <Button

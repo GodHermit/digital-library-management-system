@@ -2,7 +2,7 @@ import { Button, Tooltip } from "@heroui/react";
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router';
 
 interface AsideItemProps {
   children: ReactNode;
