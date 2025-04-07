@@ -22,4 +22,5 @@ export const BOOKS_PAGINATION: PaginateConfig<BookEntity> = {
     genres: true,
     publishedBy: true,
   },
+  maxLimit: Number.POSITIVE_INFINITY,
 };

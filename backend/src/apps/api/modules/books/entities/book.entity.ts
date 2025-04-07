@@ -10,6 +10,7 @@ import {
 import { GenreEntity } from '../../genres/entities/genre.entity';
 import { PublisherEntity } from '../../publishers/entities/publisher.entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { EReadingStatus } from '../types/reading-status';
 
 @Entity('books')
 export class BookEntity extends BaseEntity {
@@ -84,4 +85,6 @@ export class BookEntity extends BaseEntity {
 
   @Column({ nullable: true })
   format?: string;
+
+  status?: EReadingStatus;
 }

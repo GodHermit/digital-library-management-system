@@ -3,6 +3,7 @@ import { BookEntity } from '../../books/entities/book.entity';
 import { GenreResponseDto } from '../../genres/dto/genre-response.dto';
 import { PublisherResponseDto } from '../../publishers/dto/publisher-response.dto';
 import { UserPublicResponseDto } from '../../users/dto/user-public-response.dto';
+import { EReadingStatus } from '../types/reading-status';
 
 export class BookResponseDto {
   @ApiProperty()
@@ -47,7 +48,10 @@ export class BookResponseDto {
   @ApiProperty({ nullable: true })
   format?: string;
 
-  constructor(entity: BookEntity) {
+  @ApiProperty({ enum: EReadingStatus, nullable: true, required: false })
+  status?: EReadingStatus;
+
+  constructor(entity: BookEntity, status?: EReadingStatus) {
     this.id = entity.id;
     this.title = entity.title;
     this.description = entity.description;
@@ -72,5 +76,6 @@ export class BookResponseDto {
     this.seriesId = entity.seriesId;
     this.edition = entity.edition;
     this.format = entity.format;
+    this.status = status || entity.status;
   }
 }
