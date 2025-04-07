@@ -235,6 +235,7 @@ export class OrdersTrackerConsumer {
       this.logger.warn(
         `[Order ${orderId}][Item: ${itemId}]: Publisher ${publisherId} does not have an owner. Skipping payment!`,
       );
+      return;
     }
 
     this.logger.log(
