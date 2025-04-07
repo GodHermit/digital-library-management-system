@@ -250,4 +250,24 @@ export class UsersService {
 
     return data;
   }
+
+  async deleteUser(user: UserEntity) {
+    if (!user) {
+      throw new NotFoundException(
+        `A User with the "${user.id}" ID doesn't exist.`,
+      );
+    }
+
+    return await runWithQueryRunner(this.dataSource, async (qr) => {
+      const wallets = await this.walletRepository.find({
+        where: { user: { id: user.id } },
+      });
+
+      if (wallets.length > 0) {
+        await this.walletRepository.remove(wallets, qr);
+      }
+
+      return await this.usersRepository.remove(user, qr);
+    });
+  }
 }

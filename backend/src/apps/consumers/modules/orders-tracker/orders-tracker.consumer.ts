@@ -230,12 +230,20 @@ export class OrdersTrackerConsumer {
       throw new Error(`Publisher ${publisherId} not found`);
     }
 
+    if (!publisher.ownedBy) {
+      this.logger.warn(
+        `[Order ${orderId}][Item: ${itemId}]: Publisher ${publisherId} does not have an owner. Skipping payment!`,
+      );
+    }
+
     this.logger.log(
       `[Order ${orderId}][Item: ${itemId}]: Found publisher ${publisherId} for item ${itemId}`,
     );
 
-    const publisherWallets = publisher.ownedBy.wallets;
-    const publisherWallet = publisherWallets.find((wallet) => wallet.isDefault);
+    const publisherWallets = publisher.ownedBy?.wallets ?? [];
+    const publisherWallet = publisherWallets?.find(
+      (wallet) => wallet.isDefault,
+    );
 
     if (!publisherWallet) {
       throw new Error(

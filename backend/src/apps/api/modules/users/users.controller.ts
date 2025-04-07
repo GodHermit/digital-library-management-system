@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Post,
@@ -70,5 +71,16 @@ export class UsersController {
       ...data,
       data: data.data.map((user) => new UserResponseDto(user)),
     };
+  }
+
+  @Delete('/@me')
+  @ApiOperation({
+    summary: 'Delete current user',
+  })
+  @ApiResponse({ type: UserResponseDto })
+  @BearerTokenAuth()
+  async deleteUser(@GetUser() user: UserEntity) {
+    const data = await this.usersService.deleteUser(user);
+    return new UserResponseDto(data);
   }
 }

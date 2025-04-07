@@ -7,12 +7,19 @@ import { OrderTransactionEntity } from './order-transaction.entity';
 
 @Entity('orders')
 export class OrderEntity extends BaseEntity {
-  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true })
+  @ManyToOne(() => UserEntity, (user) => user.id, {
+    eager: true,
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'orderedByUserId' })
-  orderedBy: UserEntity;
+  orderedBy?: UserEntity;
 
-  @Column()
-  orderedByUserId: UserEntity['id'];
+  @Column({
+    nullable: true,
+  })
+  orderedByUserId?: UserEntity['id'];
 
   @Column({ type: 'timestamptz' })
   orderedAt: Date;

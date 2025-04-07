@@ -23,14 +23,22 @@ export class BookEntity extends BaseEntity {
   @Column({ type: 'timestamptz' })
   publishedAt: Date;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true })
+  @ManyToOne(() => UserEntity, (user) => user.id, {
+    eager: true,
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'publishedByUserId' })
   publishedBy?: UserEntity;
 
-  @Column()
-  publishedByUserId: string;
+  @Column({ nullable: true })
+  publishedByUserId?: UserEntity['id'];
 
-  @ManyToMany(() => UserEntity, (user) => user.publishedBooks, { eager: true })
+  @ManyToMany(() => UserEntity, (user) => user.publishedBooks, {
+    eager: true,
+    onDelete: 'SET NULL',
+  })
   @JoinTable({
     name: 'book_authors',
     joinColumn: {

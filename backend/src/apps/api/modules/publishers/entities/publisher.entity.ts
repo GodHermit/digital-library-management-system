@@ -14,10 +14,15 @@ export class PublisherEntity extends BaseEntity {
   @OneToMany(() => BookEntity, (book) => book.publisher)
   books: BookEntity[];
 
-  @OneToOne(() => UserEntity, (user) => user.id, { eager: true })
+  @OneToOne(() => UserEntity, (user) => user.id, {
+    eager: true,
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'ownedByUserId' })
-  ownedBy: UserEntity;
+  ownedBy?: UserEntity;
 
-  @Column()
-  ownedByUserId: UserEntity['id'];
+  @Column({ nullable: true })
+  ownedByUserId?: UserEntity['id'];
 }
