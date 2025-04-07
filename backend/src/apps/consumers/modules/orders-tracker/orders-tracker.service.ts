@@ -12,6 +12,7 @@ import { viemClient } from 'src/common/modules/viem/viem.client';
 import { formatEther, WatchContractEventReturnType } from 'viem';
 import { ORDERS_QUEUE } from './constants/queue';
 import { Queue } from 'bull';
+import { ITrackedOrderArgs } from './types';
 
 @Injectable()
 export class OrdersTrackerService
@@ -45,9 +46,10 @@ export class OrdersTrackerService
             await this.ordersQueue.add(
               {
                 hash: log.transactionHash,
+                block: log.blockNumber.toString(),
                 orderId: args.orderId,
                 value: +args.amount.toString(),
-              },
+              } as ITrackedOrderArgs,
               {
                 attempts: 1,
                 removeOnFail: true,

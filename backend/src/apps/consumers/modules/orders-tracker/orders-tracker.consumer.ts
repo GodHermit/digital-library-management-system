@@ -76,6 +76,7 @@ export class OrdersTrackerConsumer {
     newTransaction.txHash = hash;
     newTransaction.valueInEth = +formatEther(valueBn);
     newTransaction.orderId = orderId;
+    newTransaction.blockNumber = receipt.blockNumber;
 
     this.logger.log(`[Order ${orderId}]: Saving transaction ${hash}`);
 

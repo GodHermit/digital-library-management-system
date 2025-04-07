@@ -19,4 +19,14 @@ export class OrderTransactionEntity extends BaseEntity {
 
   @Column({ type: 'double precision' })
   valueInEth: number;
+
+  @Column({
+    type: 'bigint',
+    transformer: {
+      from: (val) => BigInt(val || 0),
+      to: (val) => val?.toString(),
+    },
+    default: '0',
+  })
+  blockNumber: bigint;
 }
