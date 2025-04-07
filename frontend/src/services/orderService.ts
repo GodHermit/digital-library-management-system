@@ -57,7 +57,6 @@ export class OrderService {
 
     addToast({
       title: 'Транзакція відправлена в обробку',
-      shouldShowTimeoutProgress: true,
       severity: 'success',
       promise: waitForTransactionReceipt(wagmiConfig, {
         hash,
@@ -67,6 +66,18 @@ export class OrderService {
     await waitForTransactionReceipt(wagmiConfig, {
       hash,
     });
+  }
+
+  async closeOrder(orderId: string, reason: string) {
+    const url = `/api/orders/close`;
+    const { data } = await $api.post<IOrder>(url, { orderId, reason });
+
+    addToast({
+      title: 'Замовлення успішно скасоване',
+      severity: 'success',
+    });
+
+    return data;
   }
 }
 

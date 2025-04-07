@@ -5,7 +5,7 @@ import { orderService } from '@/services/orderService';
 import { priceService } from '@/services/priceService';
 import { userService } from '@/services/userService';
 import { useSettingsStore } from '@/stores/settings';
-import { useShoppingCartStore } from '@/stores/soppingCart';
+import { shoppingCartStore, useShoppingCartStore } from '@/stores/soppingCart';
 import { useUserStore } from '@/stores/user';
 import { EOrderStatus } from '@/types/order';
 import { ROUTES } from '@/types/routes';
@@ -146,9 +146,14 @@ export function CheckoutPage() {
 
   const handleCancel = async () => {
     try {
+      const { clear } = shoppingCartStore.getState();
       if (!orderId) {
         navigate(ROUTES.SHOPPING_CART);
         return;
+      } else {
+        await orderService.closeOrder(orderId, 'cancelled');
+        clear();
+        navigate(ROUTES.SHOPPING_CART);
       }
     } catch (error) {
       addErrorToast(error);
@@ -157,6 +162,7 @@ export function CheckoutPage() {
 
   const handleSubmit = async (data: ICheckoutForm) => {
     try {
+      const { clear } = shoppingCartStore.getState();
       const totalPrice = items.reduce((acc, item) => {
         const price = item.priceInETH || 0;
         return acc + price;
@@ -172,11 +178,21 @@ export function CheckoutPage() {
         await orderService.payOrder(order.id, totalPrice - paidPriceInETH);
       } else {
         await orderService.createOrder(data, totalPrice, navigate);
+        clear();
       }
     } catch (error) {
       addErrorToast(error);
     }
   };
+
+  const isOrderClosed = useMemo(() => {
+    if (!order) return false;
+    return (
+      order.status === EOrderStatus.COMPLETED ||
+      order.status === EOrderStatus.CANCELLED ||
+      order.status === EOrderStatus.FAILED
+    );
+  }, [order]);
 
   if (isLoading) {
     return (
@@ -300,13 +316,15 @@ export function CheckoutPage() {
         )}
         {order && (
           <div className="flex flex-col gap-4">
-            <div>
-              <b className="font-bold text-white">Час для оплати:</b>{' '}
-              <span>
-                {minutes.toString().padStart(2, '0')}:
-                {seconds.toString().padStart(2, '0')}
-              </span>
-            </div>
+            {order.status === EOrderStatus.PENDING && (
+              <div>
+                <b className="font-bold text-white">Час для оплати:</b>{' '}
+                <span>
+                  {minutes.toString().padStart(2, '0')}:
+                  {seconds.toString().padStart(2, '0')}
+                </span>
+              </div>
+            )}
             <div>
               <b className="font-bold text-white">Статус:</b>{' '}
               <Chip
@@ -400,19 +418,32 @@ export function CheckoutPage() {
                 'Виникла помилка при обробці замовлення'}
             </Button>
           )}
-          <Button
-            size="lg"
-            className="w-full"
-            variant="flat"
-            onPress={handleCancel}
-            type="button"
-            isDisabled={
-              form.formState.isSubmitting ||
-              (order && order?.status !== EOrderStatus.PENDING)
-            }
-          >
-            Скасувати
-          </Button>
+          {!isOrderClosed && (
+            <Button
+              size="lg"
+              className="w-full"
+              variant="flat"
+              onPress={handleCancel}
+              type="button"
+              isDisabled={
+                form.formState.isSubmitting ||
+                (order && order?.status !== EOrderStatus.PENDING)
+              }
+            >
+              Скасувати
+            </Button>
+          )}
+          {isOrderClosed && (
+            <Button
+              size="lg"
+              className="w-full"
+              variant="flat"
+              onPress={() => navigate(ROUTES.HOME)}
+              type="button"
+            >
+              На головну
+            </Button>
+          )}
         </div>
       </form>
     </div>
