@@ -10,7 +10,7 @@ export function HomePage() {
   return (
     <>
       <h1>Головна</h1>
-      <section className="flex flex-wrap justify-between gap-x-4 gap-y-12">
+      <section className="flex flex-wrap justify-start gap-x-4 gap-y-12">
         {isLoading &&
           Array.from({ length: 10 }).map((_, index) => (
             <BookGalleryItem key={index} isLoading />

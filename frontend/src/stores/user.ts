@@ -6,7 +6,7 @@ export interface IUserStore {
    * The user object
    */
   user?: IUser;
-  setUser: (user: IUser) => void;
+  setUser: (user?: IUser) => void;
 }
 
 export const userStore = create<IUserStore>((set) => ({

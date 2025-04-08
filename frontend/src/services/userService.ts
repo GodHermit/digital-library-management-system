@@ -4,6 +4,7 @@ import { IUser } from '@/types/user';
 import { addErrorToast } from '@/utils/errorToast';
 import { $api } from '.';
 import { IPaginate } from '@/types/paginate';
+import { shoppingCartStore } from '@/stores/soppingCart';
 
 export class UserService {
   async registerUser() {
@@ -52,6 +53,19 @@ export class UserService {
         limit: 10,
       },
     });
+
+    return data;
+  }
+
+  async deleteAccount() {
+    const url = '/api/users/@me';
+    const { data } = await $api.delete<IUser>(url);
+
+    const { setUser } = userStore.getState();
+    setUser(undefined);
+
+    const { clear } = shoppingCartStore.getState();
+    clear();
 
     return data;
   }

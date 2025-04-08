@@ -11,7 +11,7 @@ export function FontSizeSettings() {
   return (
     <div className="mt-12">
       <Select
-        label="Font size"
+        label="Розмір шрифту"
         labelPlacement="outside"
         placeholder="Select font size"
         variant="bordered"
@@ -19,19 +19,19 @@ export function FontSizeSettings() {
         onChange={(e) => setFontSize(e.target.value as FONT_SIZE)}
       >
         <SelectItem key={FONT_SIZE.SMALL} textValue="Small">
-          <span className="text-sm">Small</span>
+          <span className="text-sm">Малий</span>
         </SelectItem>
         <SelectItem key={FONT_SIZE.BASE} textValue="Base">
-          <span className="text-base">Base</span>
+          <span className="text-base">Нормальний (за замовчуванням)</span>
         </SelectItem>
         <SelectItem key={FONT_SIZE.MEDIUM} textValue="Medium">
-          <span className="text-medium">Medium</span>
+          <span className="text-medium">Середній</span>
         </SelectItem>
         <SelectItem key={FONT_SIZE.LARGE} textValue="Large">
-          <span className="text-lg">Large</span>
+          <span className="text-lg">Великий</span>
         </SelectItem>
         <SelectItem key={FONT_SIZE.EXTRA_LARGE} textValue="Extra large">
-          <span className="text-xl">Extra large</span>
+          <span className="text-xl">Найбільший</span>
         </SelectItem>
       </Select>
     </div>
