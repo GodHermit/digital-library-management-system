@@ -14,6 +14,7 @@ import { ShoppingCart } from './pages/ShoppingCart';
 import { useEffect } from 'react';
 import { priceService } from './services/priceService';
 import { CheckoutPage } from './pages/Checkout';
+import { FAQPage } from './pages/FAQ';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         path: ROUTES.SHOPPING_CART,
         element: <ShoppingCart />,
       },
+      {
+        path: ROUTES.FAQ,
+        element: <FAQPage />,
+      },
     ],
     errorElement: <ErrorPage />,
   },
@@ -52,6 +57,7 @@ const router = createBrowserRouter([
         <CheckoutPage />
       </Providers>
     ),
+    errorElement: <ErrorPage />,
   },
   {
     path: ROUTES.CHECKOUT_ORDER,
@@ -60,6 +66,7 @@ const router = createBrowserRouter([
         <CheckoutPage />
       </Providers>
     ),
+    errorElement: <ErrorPage />,
   },
 ]);
 

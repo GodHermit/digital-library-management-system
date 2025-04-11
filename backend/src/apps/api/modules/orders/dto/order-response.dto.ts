@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EOrderStatus } from '../types/order.enum';
-import { OrderTransactionResponseDto } from './order-transaction-response.dto';
 import { OrderEntity } from '../entities/order.entity';
+import { EOrderStatus } from '../types/order.enum';
 import { OrderItemResponseDto } from './order-item.dto';
+import { OrderTransactionResponseDto } from './order-transaction-response.dto';
 
 export class OrderResponseDto {
   @ApiProperty()
@@ -38,6 +38,9 @@ export class OrderResponseDto {
   @ApiProperty({ required: false })
   updatedAt?: Date;
 
+  @ApiProperty({ required: false, nullable: true })
+  fileUrl?: string;
+
   constructor(order: OrderEntity) {
     this.id = order.id;
     this.orderedByUserId = order.orderedByUserId;
@@ -51,7 +54,13 @@ export class OrderResponseDto {
     this.orderCompletedOrClosedAt = order.orderCompletedOrClosedAt;
     this.closeReason = order.closeReason;
     this.items =
-      order.items?.map((item) => new OrderItemResponseDto(item)) || [];
+      order.items?.map(
+        (item) =>
+          new OrderItemResponseDto(
+            item,
+            order.status === EOrderStatus.COMPLETED,
+          ),
+      ) || [];
     this.transactions =
       order.transactions?.map(
         (transaction) => new OrderTransactionResponseDto(transaction),

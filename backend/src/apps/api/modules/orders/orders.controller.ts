@@ -53,8 +53,11 @@ export class OrdersController {
   @ApiOperation({ summary: 'Get an order by ID' })
   @ApiResponse({ type: OrderResponseDto })
   @BearerTokenAuth()
-  async getOrderById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const order = await this.ordersService.getOrderById(id);
+  async getOrderById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @GetUser() user: UserEntity,
+  ) {
+    const order = await this.ordersService.getOrderById(id, user);
     return new OrderResponseDto(order);
   }
 

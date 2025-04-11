@@ -49,9 +49,9 @@ export class OrdersService {
     );
   }
 
-  async getOrderById(id: string): Promise<OrderEntity> {
+  async getOrderById(id: string, user: UserEntity): Promise<OrderEntity> {
     const order = await this.ordersRepository.findOne({
-      where: { id },
+      where: { id, orderedBy: { id: user.id } },
       relations: ORDERS_PAGINATION.relations,
     });
 
@@ -110,7 +110,7 @@ export class OrdersService {
   }
 
   async closeOrder(dto: CloseOrderDto, user: UserEntity): Promise<OrderEntity> {
-    const order = await this.getOrderById(dto.orderId);
+    const order = await this.getOrderById(dto.orderId, user);
     if (order.status !== EOrderStatus.PENDING) {
       throw new ConflictException('Order is not open');
     }

@@ -5,7 +5,7 @@ export interface IBook {
   id: string;
   title: string;
   description: string;
-  publishedAt: Date;
+  publishedAt: string;
   publishedBy: IPublicUser;
   authors: IPublicUser[];
   language: string;
@@ -18,6 +18,8 @@ export interface IBook {
   format?: string;
   asin?: string;
   isbn?: string;
+  createdAt: string;
+  updatedAt: string;
 
   status?: EStatus;
 }

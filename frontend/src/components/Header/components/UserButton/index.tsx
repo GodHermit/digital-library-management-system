@@ -1,5 +1,4 @@
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
-import { useUserStore } from '@/stores/user';
 import { ROUTES } from '@/types/routes';
 import { formatAddress } from '@/utils/address';
 import {
@@ -21,12 +20,11 @@ import {
   Link2OffIcon,
   LogOutIcon,
   SettingsIcon,
-  UserIcon,
+  UserIcon
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useAccount, useDisconnect } from 'wagmi';
-import { useShallow } from 'zustand/shallow';
 
 export function UserButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +42,7 @@ export function UserButton() {
   const isLoginDisabled = !isReady || (isReady && isAuthenticated);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_copiedText, copy] = useCopyToClipboard();
-  const user = useUserStore(useShallow(s => s.user));
+  // const user = useUserStore(useShallow(s => s.user));
 
   if (!isAuthenticated) {
     return (

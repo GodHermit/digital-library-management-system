@@ -14,3 +14,4 @@ export const EXAMPLE_UUIDS = [
 export const EXAMPLE_SERIES_ID = '123e4567-e89b-12d3-a456-426614174003';
 export const EXAMPLE_EDITION = 'First Edition';
 export const EXAMPLE_FORMAT = 'Hardcover';
+export const EXAMPLE_FILE_URL = 'https://example.com/file.pdf';

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
   IsUUID,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,6 +14,7 @@ import {
   EXAMPLE_DATE,
   EXAMPLE_DESCRIPTION,
   EXAMPLE_EDITION,
+  EXAMPLE_FILE_URL,
   EXAMPLE_FORMAT,
   EXAMPLE_LANGUAGE,
   EXAMPLE_PRICE_IN_ETH,
@@ -89,4 +91,10 @@ export class CreateBookDto {
   @IsString()
   @IsOptional()
   format?: string;
+
+  @ApiProperty({ example: EXAMPLE_FILE_URL })
+  @IsString()
+  @IsUrl()
+  @IsNotEmpty()
+  fileUrl?: string;
 }

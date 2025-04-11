@@ -94,5 +94,8 @@ export class BookEntity extends BaseEntity {
   @Column({ nullable: true })
   format?: string;
 
+  @Column({ nullable: true })
+  fileUrl?: string;
+
   status?: EReadingStatus;
 }

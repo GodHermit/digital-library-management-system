@@ -15,12 +15,19 @@ export class OrderItemResponseDto {
   @ApiProperty({ required: false })
   updatedAt?: Date;
 
-  constructor(entity: OrderItemEntity) {
+  @ApiProperty({ required: false, nullable: true })
+  fileUrl?: string;
+
+  constructor(entity: OrderItemEntity, includeFileUrl = false) {
     entity.book.priceInETH = entity.priceInETH;
 
     this.id = entity.id;
     this.book = new BookResponseDto(entity.book);
     this.createdAt = entity.createdAt;
     this.updatedAt = entity.updatedAt;
+
+    if (includeFileUrl) {
+      this.fileUrl = entity.book.fileUrl;
+    }
   }
 }

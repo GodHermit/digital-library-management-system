@@ -13,6 +13,8 @@ import { HealthModule } from 'src/common/modules/health/health.module';
 import { GenresModule } from './modules/genres/genres.module';
 import { PublishersModule } from './modules/publishers/publishers.module';
 import redisConfig from 'src/common/configs/redis.config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,6 +24,10 @@ import redisConfig from 'src/common/configs/redis.config';
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
     ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../assets/'),
+      serveRoot: '/assets',
+    }),
     DatabaseModule,
     HealthModule,
 

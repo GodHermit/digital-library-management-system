@@ -43,6 +43,7 @@ export interface IOrderItem {
   book: IBook;
   createdAt: string;
   updatedAt?: string;
+  fileUrl?: string;
 }
 
 export interface IOrderTransaction {

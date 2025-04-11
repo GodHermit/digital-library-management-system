@@ -31,7 +31,7 @@ export function SearchModal({ isOpen, onOpenChange }: ShareModalProps) {
 
   const { data, isLoading } = useGetBooksQuery({
     page: 1,
-    limit: 10,
+    limit: 3,
     search: searchDebounced,
   });
 
@@ -71,7 +71,7 @@ export function SearchModal({ isOpen, onOpenChange }: ShareModalProps) {
                 autoFocus
                 variant="bordered"
                 type="text"
-                placeholder="Search..."
+                placeholder="Пошук..."
                 size="lg"
                 radius="sm"
                 startContent={<SearchIcon className="text-default-300" />}
@@ -85,7 +85,7 @@ export function SearchModal({ isOpen, onOpenChange }: ShareModalProps) {
                 ref={inputRef}
               />
             </ModalHeader>
-            <ModalBody className="px-4 pb-4 pt-0">
+            <ModalBody className="max-h-[calc(100vh-200px)] overflow-y-auto px-4 pb-4 pt-0">
               {isLoading && (
                 <div className="flex min-h-10 items-center justify-center gap-2 text-default-500">
                   <Spinner />
@@ -107,6 +107,7 @@ export function SearchModal({ isOpen, onOpenChange }: ShareModalProps) {
                     onClose();
                     navigate(ROUTES.BOOK.replace(':id', book.id));
                   }}
+                  className='min-h-min'
                 >
                   <CardBody>
                     <div className="flex gap-4">

@@ -1,6 +1,8 @@
 import { BRAND_NAME } from '@/constants/brand';
 import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import { ROUTES } from '@/types/routes';
+import { EUserRole, EUserType } from '@/types/user';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -17,8 +19,6 @@ import {
 import { useDebounceValue } from 'usehooks-ts';
 import { useShallow } from 'zustand/shallow';
 import { AsideItem } from './components';
-import { useUserStore } from '@/stores/user';
-import { EUserRole, EUserType } from '@/types/user';
 
 export function Aside() {
   const [isAsideOpen] = useSettingsStore(useShallow(s => [s.isAsideOpen]));

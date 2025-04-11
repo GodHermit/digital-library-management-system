@@ -187,6 +187,13 @@ export class BooksService {
   async findAllWithFilters(
     query: PaginateQuery,
   ): Promise<Paginated<BookEntity>> {
+    if (Array.isArray(query.sortBy)) {
+      query.sortBy = query.sortBy.map(
+        (sort) => String(sort).split(':') as [string, string],
+      );
+    } else {
+      query.sortBy = [String(query.sortBy).split(':') as [string, string]];
+    }
     return await paginate(query, this.booksRepository, BOOKS_PAGINATION);
   }
 }

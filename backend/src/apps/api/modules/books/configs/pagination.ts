@@ -2,8 +2,8 @@ import { PaginateConfig } from 'nestjs-paginate';
 import { BookEntity } from '../entities/book.entity';
 
 export const BOOKS_PAGINATION: PaginateConfig<BookEntity> = {
-  sortableColumns: ['title', 'publishedAt'],
-  defaultSortBy: [['title', 'ASC']],
+  multiWordSearch: true,
+  sortableColumns: ['title', 'publishedAt', 'createdAt', 'updatedAt'],
   searchableColumns: [
     'title',
     'description',

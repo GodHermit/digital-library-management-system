@@ -31,12 +31,13 @@ import dayjs from 'dayjs';
 import { Link2Icon } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router';
+import { data, useNavigate, useParams } from 'react-router';
 import { useTimer } from 'react-timer-hook';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { useShallow } from 'zustand/shallow';
 import { ICheckoutForm } from './scheme';
+import { downloadByUrl } from '@/utils/download';
 
 export function CheckoutPage() {
   const { id: orderId } = useParams();
@@ -58,12 +59,20 @@ export function CheckoutPage() {
   const [localItems] = useShoppingCartStore(useShallow(s => [s.items]));
   const email = user?.email;
 
-  const { data: order, isLoading } = useGetOrderQuery(orderId, {
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = useGetOrderQuery(orderId, {
     onSuccess: data => {
       restart(dayjs(data.createdAt).add(30, 'minutes').toDate());
     },
     refreshInterval: 5000,
   });
+
+  if (error) {
+    throw data('Order not found', { status: 404 });
+  }
 
   const { minutes, seconds, restart } = useTimer({
     autoStart: !!order,
@@ -176,12 +185,28 @@ export function CheckoutPage() {
 
       if (order) {
         await orderService.payOrder(order.id, totalPrice - paidPriceInETH);
+        clear();
       } else {
         await orderService.createOrder(data, totalPrice, navigate);
         clear();
       }
     } catch (error) {
       addErrorToast(error);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!order) return;
+    for (let i = 0; i < order.items.length; i++) {
+      try {
+        const item = order.items[i];
+        if (!item.fileUrl) continue;
+        const extension = item.fileUrl.split('.').pop();
+        const fileName = `${item.book.title ?? Date.now()}.${extension}`;
+        await downloadByUrl(item.fileUrl, fileName);
+      } catch (error) {
+        addErrorToast(error);
+      }
     }
   };
 
@@ -377,6 +402,25 @@ export function CheckoutPage() {
           </div>
         )}
         <div className="flex flex-col gap-2">
+          {order?.status === EOrderStatus.COMPLETED && (
+            <>
+              <div className="text-center text-green-500">
+                Замовлення успішно завершене. Дякуємо за покупку!
+              </div>
+              <Button
+                size="lg"
+                className="w-full"
+                color={
+                  orderStatusToColor[order?.status || EOrderStatus.PENDING]
+                }
+                variant="solid"
+                onPress={handleDownload}
+                type="button"
+              >
+                Завантажити файли
+              </Button>
+            </>
+          )}
           {isReady && !isAuthenticated && (
             <Button
               size="lg"
@@ -391,7 +435,7 @@ export function CheckoutPage() {
               Увійти
             </Button>
           )}
-          {isAuthenticated && (
+          {isAuthenticated && order?.status !== EOrderStatus.COMPLETED && (
             <Button
               size="lg"
               className="w-full"
@@ -410,8 +454,6 @@ export function CheckoutPage() {
               {order?.status === EOrderStatus.PENDING && 'Оплатити замовлення'}
               {order?.status === EOrderStatus.PAID &&
                 'Замовлення успішно оплачене'}
-              {order?.status === EOrderStatus.COMPLETED &&
-                'Замовлення успішно завершене'}
               {order?.status === EOrderStatus.CANCELLED &&
                 'Замовлення скасоване'}
               {order?.status === EOrderStatus.FAILED &&

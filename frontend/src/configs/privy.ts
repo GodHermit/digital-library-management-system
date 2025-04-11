@@ -10,8 +10,8 @@ export const privyConfig: PrivyClientConfig = {
   appearance: {
     theme: '#18181B',
     accentColor: '#006FEE',
-    landingHeader: `Welcome to ${BRAND_NAME} 🌹`,
-    loginMessage: 'Log in or Sign up',
+    landingHeader: `Вітаємо в ${BRAND_NAME} 🌹`,
+    loginMessage: 'Увійдіть або зареєструйтесь',
   },
   intl: {
     defaultCountry: 'UA',

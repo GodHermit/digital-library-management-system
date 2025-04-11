@@ -51,6 +51,12 @@ export class BookResponseDto {
   @ApiProperty({ enum: EReadingStatus, nullable: true, required: false })
   status?: EReadingStatus;
 
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty({ nullable: true })
+  updatedAt?: Date;
+
   constructor(entity: BookEntity, status?: EReadingStatus) {
     this.id = entity.id;
     this.title = entity.title;
@@ -77,5 +83,7 @@ export class BookResponseDto {
     this.edition = entity.edition;
     this.format = entity.format;
     this.status = status || entity.status;
+    this.createdAt = entity.createdAt;
+    this.updatedAt = entity.updatedAt;
   }
 }
