@@ -4,6 +4,7 @@ import { ControlledNumberInput } from '@/components/ControlledNumberInput';
 import { ControlledSelect } from '@/components/ControlledSelect';
 import { ControlledTextArea } from '@/components/ControlledTextArea';
 import { UploadFileButton } from '@/components/UploadFileButton';
+import { useGetGenresQuery } from '@/hooks/useGetGenresQuery';
 import { useGetPublishersQuery } from '@/hooks/useGetPublishersQuery';
 import { useGetUsersQuery } from '@/hooks/useGetUsersQuery';
 import { priceService } from '@/services/priceService';
@@ -28,6 +29,8 @@ import {
 import { ArrowUpFromLineIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import { cloneElement, ReactElement, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import locale from 'locale-codes';
+import { translateLocale } from '@/utils/i18n';
 
 interface IEditBookModalProps {
   book?: IBook;
@@ -50,6 +53,7 @@ export function CreateOrEditBookModal({
     limit: Number.POSITIVE_INFINITY,
     sortBy: ['fullName:ASC'],
   });
+  const { data: genres, isLoading: isGenresLoading } = useGetGenresQuery();
 
   const form = useForm<IBookUpdate>({
     values: isEditMode
@@ -199,15 +203,42 @@ export function CreateOrEditBookModal({
                         </SelectItem>
                       )}
                     </ControlledSelect>
-                    <ControlledInput
+                    <ControlledSelect
                       name="language"
                       control={form.control}
                       label="Мова книги"
                       description="Код мови згідно стандарту ISO 639-1"
+                      isVirtualized
+                      itemHeight={48}
+                      items={locale.all.filter(l => l.tag.length === 2)}
                       rules={{
                         required: "Це поле є обов'язковим",
                       }}
-                    />
+                    >
+                      {language => (
+                        <SelectItem
+                          key={language.tag}
+                          textValue={translateLocale(
+                            language.tag,
+                            `${language.name} ${language.location}`
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex flex-col">
+                              <span className="text-small capitalize">
+                                {translateLocale(
+                                  language.tag,
+                                  `${language.name} ${language.location}`
+                                )}
+                              </span>
+                              <span className="text-tiny text-default-400">
+                                {language.tag}
+                              </span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      )}
+                    </ControlledSelect>
                     <ControlledInput
                       name="coverUrl"
                       control={form.control}
@@ -223,6 +254,9 @@ export function CreateOrEditBookModal({
                           variant="flat"
                           onSuccess={files => {
                             form.setValue('coverUrl', files[0].url);
+                          }}
+                          inputProps={{
+                            accept: 'image/png,image/jpeg,image/webp',
                           }}
                         >
                           <ArrowUpFromLineIcon width={16} height={16} />
@@ -299,37 +333,44 @@ export function CreateOrEditBookModal({
                         </SelectItem>
                       )}
                     </ControlledSelect>
-                    <ControlledInput
+                    <ControlledSelect
                       name="genreIds"
                       control={form.control}
-                      label="ID жанрів (через кому)"
+                      label="Жанри"
+                      selectionMode="multiple"
+                      isLoading={isGenresLoading}
+                      isDisabled={isGenresLoading}
+                      isVirtualized={(genres?.length ?? 0) > 10}
+                      items={genres ?? []}
+                      itemHeight={48}
                       rules={{
                         required: "Це поле є обов'язковим",
                       }}
-                    />
+                    >
+                      {genre => (
+                        <SelectItem key={genre.id} textValue={genre.name}>
+                          <div className="flex items-center gap-2">
+                            <div className="flex flex-col">
+                              <span className="text-small">{genre.name}</span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      )}
+                    </ControlledSelect>
                     <ControlledInput
                       name="seriesId"
                       control={form.control}
                       label="ID серії"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
                     />
                     <ControlledInput
                       name="edition"
                       control={form.control}
                       label="Видання"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
                     />
                     <ControlledInput
                       name="format"
                       control={form.control}
                       label="Формат"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
                     />
                     <ControlledInput
                       name="fileUrl"
@@ -339,6 +380,22 @@ export function CreateOrEditBookModal({
                         required: "Це поле є обов'язковим",
                       }}
                       placeholder="https://"
+                      endContent={
+                        <UploadFileButton
+                          isIconOnly
+                          size="sm"
+                          variant="flat"
+                          onSuccess={files => {
+                            form.setValue('coverUrl', files[0].url);
+                          }}
+                          inputProps={{
+                            accept:
+                              'text/*,application/pdf,application/rtf,application/epub+zip',
+                          }}
+                        >
+                          <ArrowUpFromLineIcon width={16} height={16} />
+                        </UploadFileButton>
+                      }
                     />
                     <ControlledInput
                       name="asin"

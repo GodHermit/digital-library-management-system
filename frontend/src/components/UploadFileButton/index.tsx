@@ -2,18 +2,18 @@ import { fileService } from '@/services/fileService';
 import { IFile } from '@/types/files';
 import { addErrorToast } from '@/utils/errorToast';
 import { addToast, Button, ButtonProps } from '@heroui/react';
-import { ChangeEvent, HTMLAttributes, useState } from 'react';
+import { ChangeEvent, InputHTMLAttributes, useState } from 'react';
 
-type TUploadFileButtonProps = ButtonProps & HTMLAttributes<HTMLInputElement>;
-
-interface IUploadFileButtonProps extends TUploadFileButtonProps {
+interface IUploadFileButtonProps extends ButtonProps {
   children?: React.ReactNode;
   onSuccess?: (files: IFile[]) => void;
+  inputProps?: InputHTMLAttributes<HTMLInputElement>;
 }
 
 export function UploadFileButton({
   children,
   onSuccess,
+  inputProps,
   ...props
 }: IUploadFileButtonProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,7 +45,12 @@ export function UploadFileButton({
   return (
     <Button as="label" isLoading={isSubmitting} {...props}>
       {children}
-      <input type="file" className="hidden size-0" onChange={handleUpload} />
+      <input
+        type="file"
+        className="hidden size-0"
+        {...inputProps}
+        onChange={handleUpload}
+      />
     </Button>
   );
 }
