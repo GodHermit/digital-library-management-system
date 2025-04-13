@@ -1,0 +1,22 @@
+{
+  "name": "digital-library-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "repository": "https://github.com/GodHermit/digital-library-management-system.git",
+  "author": "Oleh Proidakov <first.god.hermit@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:full": "turbo run dev:full",
+    "build": "turbo run build"
+  },
+  "workspaces": [
+    "backend/**",
+    "contracts/**",
+    "frontend/**"
+  ],
+  "dependencies": {
+    "turbo": "^2.5.0"
+  },
+  "packageManager": "yarn@1.22.21"
+}

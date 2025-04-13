@@ -1,6 +1,6 @@
+import { IBook } from '@/types/book';
 import { IPaginate, IPaginateParams } from '@/types/paginate';
 import { $api } from '.';
-import { IBook, IBookCreate, IBookUpdate } from '@/types/book';
 
 export class BookService {
   async getBooks(query: IPaginateParams<IBook>) {
@@ -24,17 +24,17 @@ export class BookService {
     return data;
   }
 
-  async createBook(book: IBookCreate) {
-    const url = '/api/books';
+  // async createBook(book: IBookCreate) {
+  //   const url = '/api/books';
 
-    throw new Error('Not implemented');
-  }
+  //   throw new Error('Not implemented');
+  // }
 
-  async updateBookById(id: string, book: IBookUpdate) {
-    const url = `/api/books/${id}`;
+  // async updateBookById(id: string, book: IBookUpdate) {
+  //   const url = `/api/books/${id}`;
 
-    throw new Error('Not implemented');
-  }
+  //   throw new Error('Not implemented');
+  // }
 
   async deleteBookById(id: string) {
     const url = `/api/books/${id}`;

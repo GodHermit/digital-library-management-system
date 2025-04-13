@@ -59,7 +59,7 @@ export function Book() {
         <div>
           <h1 className="mb-2">{book?.title}</h1>
           <div className="m-0 flex flex-wrap gap-2 text-xl text-foreground">
-            {book?.authors.map(a => (
+            {book?.authors?.map(a => (
               <Chip key={a.id} variant="bordered">
                 {a.fullName}
               </Chip>
