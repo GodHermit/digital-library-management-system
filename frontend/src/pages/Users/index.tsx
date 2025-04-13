@@ -47,7 +47,10 @@ export function UsersPage() {
 
   const { data, isLoading } = useSWR(
     `/users?page=${page}`,
-    async () => userService.getUsers(page),
+    async () =>
+      userService.getUsers({
+        page,
+      }),
     {
       keepPreviousData: true,
     }

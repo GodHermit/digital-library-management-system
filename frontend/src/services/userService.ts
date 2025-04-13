@@ -1,10 +1,10 @@
 import { IOnboardingForm } from '@/pages/Onboarding/scheme';
+import { shoppingCartStore } from '@/stores/soppingCart';
 import { userStore } from '@/stores/user';
+import { IPaginate, IPaginateParams } from '@/types/paginate';
 import { IUser } from '@/types/user';
 import { addErrorToast } from '@/utils/errorToast';
 import { $api } from '.';
-import { IPaginate } from '@/types/paginate';
-import { shoppingCartStore } from '@/stores/soppingCart';
 
 export class UserService {
   async registerUser() {
@@ -45,12 +45,14 @@ export class UserService {
     }
   }
 
-  async getUsers(page: number) {
+  async getUsers(query: IPaginateParams<IUser>) {
     const url = '/api/users';
+
     const { data } = await $api.get<IPaginate<IUser>>(url, {
       params: {
-        page,
+        page: query.page ?? 1,
         limit: 10,
+        ...query,
       },
     });
 

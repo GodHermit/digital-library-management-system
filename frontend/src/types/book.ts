@@ -1,3 +1,4 @@
+import { ZonedDateTime } from '@internationalized/date';
 import { IPublisher } from './publisher';
 import { IPublicUser } from './user';
 
@@ -7,7 +8,7 @@ export interface IBook {
   description: string;
   publishedAt: string;
   publishedBy: IPublicUser;
-  authors: IPublicUser[];
+  authors?: IPublicUser[];
   language: string;
   coverUrl?: string;
   priceInETH: number;
@@ -20,6 +21,7 @@ export interface IBook {
   isbn?: string;
   createdAt: string;
   updatedAt: string;
+  fileUrl?: string;
 
   status?: EStatus;
 }
@@ -36,3 +38,24 @@ export enum EStatus {
   ReInProgress = 're-reading',
   Paused = 'paused',
 }
+
+export interface IBookCreate {
+  title: string;
+  description: string;
+  publishedAt: ZonedDateTime;
+  publishedByUserId: string;
+  language: string;
+  coverUrl?: string;
+  priceInETH: string;
+  publisherId?: string;
+  authorIds?: string[];
+  genreIds: string[];
+  seriesId?: string;
+  edition?: string;
+  format?: string;
+  fileUrl?: string;
+  asin?: string;
+  isbn?: string;
+}
+
+export type IBookUpdate = Partial<IBookCreate>;
