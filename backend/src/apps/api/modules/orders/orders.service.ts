@@ -33,6 +33,13 @@ export class OrdersService {
     query: PaginateQuery,
     user: UserEntity,
   ): Promise<Paginated<OrderEntity>> {
+    if (Array.isArray(query.sortBy)) {
+      query.sortBy = query.sortBy.map(
+        (sort) => String(sort).split(':') as [string, string],
+      );
+    } else {
+      query.sortBy = [String(query.sortBy).split(':') as [string, string]];
+    }
     return paginate(query, this.ordersRepository.getRepository(), {
       ...ORDERS_PAGINATION,
       where: {
@@ -42,6 +49,13 @@ export class OrdersService {
   }
 
   async getAllOrders(query: PaginateQuery): Promise<Paginated<OrderEntity>> {
+    if (Array.isArray(query.sortBy)) {
+      query.sortBy = query.sortBy.map(
+        (sort) => String(sort).split(':') as [string, string],
+      );
+    } else {
+      query.sortBy = [String(query.sortBy).split(':') as [string, string]];
+    }
     return paginate(
       query,
       this.ordersRepository.getRepository(),

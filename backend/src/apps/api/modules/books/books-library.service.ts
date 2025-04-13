@@ -29,6 +29,14 @@ export class BooksLibraryService {
     status: EReadingStatus,
     user: UserEntity,
   ) {
+    if (Array.isArray(query.sortBy)) {
+      query.sortBy = query.sortBy.map(
+        (sort) => String(sort).split(':') as [string, string],
+      );
+    } else {
+      query.sortBy = [String(query.sortBy).split(':') as [string, string]];
+    }
+
     const booksInLibrary = await this.booksStatusRepository.find({
       where: {
         status,

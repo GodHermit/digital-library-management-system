@@ -2,6 +2,8 @@ import { PaginateConfig } from 'nestjs-paginate';
 import { UserEntity } from '../entities/user.entity';
 
 export const USERS_PAGINATION: PaginateConfig<UserEntity> = {
+  multiWordSearch: true,
+  defaultLimit: 10,
   relations: {
     organization: true,
     wallets: true,

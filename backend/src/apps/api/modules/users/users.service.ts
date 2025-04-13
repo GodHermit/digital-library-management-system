@@ -246,6 +246,13 @@ export class UsersService {
   }
 
   async getAllUsers(query: PaginateQuery) {
+    if (Array.isArray(query.sortBy)) {
+      query.sortBy = query.sortBy.map(
+        (sort) => String(sort).split(':') as [string, string],
+      );
+    } else {
+      query.sortBy = [String(query.sortBy).split(':') as [string, string]];
+    }
     const data = await paginate(query, this.usersRepository, USERS_PAGINATION);
 
     return data;

@@ -15,6 +15,7 @@ import { PublishersModule } from './modules/publishers/publishers.module';
 import redisConfig from 'src/common/configs/redis.config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -28,6 +29,10 @@ import { join } from 'path';
       rootPath: join(__dirname, '../../assets/'),
       serveRoot: '/assets',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../../public/'),
+      serveRoot: '/',
+    }),
     DatabaseModule,
     HealthModule,
 
@@ -37,6 +42,7 @@ import { join } from 'path';
     GenresModule,
     PublishersModule,
     OrdersModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],
