@@ -29,7 +29,7 @@ export class BookEntity extends BaseEntity {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'publishedByUserId' })
+  @JoinColumn({ name: 'publishedByUserId', referencedColumnName: 'id' })
   publishedBy?: UserEntity;
 
   @Column({ nullable: true })
@@ -96,6 +96,12 @@ export class BookEntity extends BaseEntity {
 
   @Column({ nullable: true })
   fileUrl?: string;
+
+  @Column({ nullable: true })
+  asin?: string;
+
+  @Column({ nullable: true })
+  isbn?: string;
 
   status?: EReadingStatus;
 }

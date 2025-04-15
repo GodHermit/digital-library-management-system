@@ -1,4 +1,4 @@
-import { IBook } from '@/types/book';
+import { IBook, IBookCreate, IBookUpdate } from '@/types/book';
 import { IPaginate, IPaginateParams } from '@/types/paginate';
 import { $api } from '.';
 
@@ -24,17 +24,22 @@ export class BookService {
     return data;
   }
 
-  // async createBook(book: IBookCreate) {
-  //   const url = '/api/books';
+  async createBook(book: IBookCreate) {
+    const url = '/api/books';
+    const { data } = await $api.post<IBook>(url, book);
+    return data;
+  }
 
-  //   throw new Error('Not implemented');
-  // }
+  async updateBookById(id: string, book: IBookUpdate) {
+    const url = `/api/books/${id}`;
 
-  // async updateBookById(id: string, book: IBookUpdate) {
-  //   const url = `/api/books/${id}`;
+    const bookWithoutEmptyFields = Object.fromEntries(
+      Object.entries(book).filter(([, value]) => !!value)
+    );
 
-  //   throw new Error('Not implemented');
-  // }
+    const { data } = await $api.put<IBook>(url, bookWithoutEmptyFields);
+    return data;
+  }
 
   async deleteBookById(id: string) {
     const url = `/api/books/${id}`;

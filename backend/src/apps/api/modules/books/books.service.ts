@@ -154,8 +154,9 @@ export class BooksService {
       book.publisher = publisher;
     }
 
-    Object.assign(book, rest);
-    const newBook = await this.booksRepository.save(book);
+    const newBookData = Object.assign(book, rest);
+
+    const newBook = await this.booksRepository.save(newBookData);
 
     return newBook;
   }

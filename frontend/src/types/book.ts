@@ -1,4 +1,3 @@
-import { ZonedDateTime } from '@internationalized/date';
 import { IPublisher } from './publisher';
 import { IPublicUser } from './user';
 
@@ -42,11 +41,11 @@ export enum EStatus {
 export interface IBookCreate {
   title: string;
   description: string;
-  publishedAt: ZonedDateTime;
+  publishedAt: string;
   publishedByUserId: string;
   language: string;
   coverUrl?: string;
-  priceInETH: string;
+  priceInETH: number;
   publisherId?: string;
   authorIds?: string[];
   genreIds: string[];

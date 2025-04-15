@@ -7,6 +7,7 @@ import {
   IsString,
   IsUrl,
   IsUUID,
+  Matches,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -42,6 +43,7 @@ export class CreateBookDto {
 
   @ApiProperty({ example: EXAMPLE_UUID })
   @IsUUID()
+  @IsString()
   @IsNotEmpty()
   publishedByUserId: string;
 
@@ -97,4 +99,20 @@ export class CreateBookDto {
   @IsUrl()
   @IsNotEmpty()
   fileUrl?: string;
+
+  @ApiProperty({ example: 'B08FC5L3RG', required: false })
+  @IsString()
+  @Matches(/^[A-Z0-9]{10}$/, {
+    message: 'ASIN must be a valid 10-character alphanumeric string',
+  })
+  @IsOptional()
+  asin?: string;
+
+  @ApiProperty({ example: '978-3-16-148410-0', required: false })
+  @IsString()
+  @Matches(/^(97(8|9))?\d{9}(\d|X)$/, {
+    message: 'ISBN must be a valid ISBN-10 or ISBN-13 format',
+  })
+  @IsOptional()
+  isbn?: string;
 }

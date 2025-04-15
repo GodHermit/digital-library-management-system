@@ -7,11 +7,14 @@ import { UploadFileButton } from '@/components/UploadFileButton';
 import { useGetGenresQuery } from '@/hooks/useGetGenresQuery';
 import { useGetPublishersQuery } from '@/hooks/useGetPublishersQuery';
 import { useGetUsersQuery } from '@/hooks/useGetUsersQuery';
+import { bookService } from '@/services/bookService';
 import { priceService } from '@/services/priceService';
-import { IBook, IBookUpdate } from '@/types/book';
+import { IBook, IBookCreate } from '@/types/book';
 import { addErrorToast } from '@/utils/errorToast';
+import { translateLocale } from '@/utils/i18n';
 import { toFixed } from '@/utils/number';
 import {
+  addToast,
   Button,
   Form,
   Modal,
@@ -21,16 +24,11 @@ import {
   ModalHeader,
   SelectItem,
 } from '@heroui/react';
-import {
-  getLocalTimeZone,
-  parseAbsolute,
-  today,
-} from '@internationalized/date';
+import { getLocalTimeZone, today } from '@internationalized/date';
+import locale from 'locale-codes';
 import { ArrowUpFromLineIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import { cloneElement, ReactElement, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import locale from 'locale-codes';
-import { translateLocale } from '@/utils/i18n';
 
 interface IEditBookModalProps {
   book?: IBook;
@@ -55,25 +53,25 @@ export function CreateOrEditBookModal({
   });
   const { data: genres, isLoading: isGenresLoading } = useGetGenresQuery();
 
-  const form = useForm<IBookUpdate>({
+  const form = useForm<IBookCreate>({
     values: isEditMode
       ? {
-          title: book.title,
-          description: book.description,
-          publishedAt: parseAbsolute(book.publishedAt, 'Europe/Kyiv'),
-          publishedByUserId: book.publishedBy?.id,
-          language: book.language,
-          coverUrl: book.coverUrl,
-          priceInETH: book.priceInETH.toString(),
-          publisherId: book.publisher?.id,
-          authorIds: book.authors?.map(author => author.id) || [],
-          genreIds: book.genres.map(genre => genre.id),
-          seriesId: book.seriesId,
-          edition: book.edition,
-          format: book.format,
-          fileUrl: book.fileUrl,
-          asin: book.asin,
-          isbn: book.isbn,
+          title: book?.title,
+          description: book?.description,
+          publishedAt: book?.publishedAt || new Date().toISOString(),
+          publishedByUserId: book?.publishedBy?.id,
+          language: book?.language,
+          coverUrl: book?.coverUrl,
+          priceInETH: book?.priceInETH,
+          publisherId: book?.publisher?.id,
+          authorIds: book?.authors?.map(author => author.id) || [],
+          genreIds: book?.genres.map(genre => genre.id) || [],
+          seriesId: book?.seriesId,
+          edition: book?.edition,
+          format: book?.format,
+          fileUrl: book?.fileUrl,
+          asin: book?.asin,
+          isbn: book?.isbn,
         }
       : undefined,
   });
@@ -84,16 +82,22 @@ export function CreateOrEditBookModal({
     name: 'priceInETH',
   });
 
-  const handleSubmit = async (formData: IBookUpdate) => {
+  const handleSubmit = async (formData: IBookCreate) => {
     try {
       setIsSubmitting(true);
 
-      console.log('Form data:', formData);
+      if (isEditMode) {
+        await bookService.updateBookById(book?.id, formData);
+      } else {
+        await bookService.createBook(formData);
+      }
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setIsOpen(false);
+      handleOpenChange(false);
       onSuccess?.();
+      addToast({
+        title: isEditMode ? 'Книгу успішно оновлено' : 'Книгу успішно додано',
+        severity: 'success',
+      });
     } catch (error) {
       addErrorToast(error);
     } finally {
@@ -317,6 +321,11 @@ export function CreateOrEditBookModal({
                       isVirtualized={(users?.data?.length ?? 0) > 10}
                       items={users?.data ?? []}
                       itemHeight={48}
+                      endContent={
+                        <Button isIconOnly size="sm" variant="flat">
+                          <PlusIcon width={16} height={16} />
+                        </Button>
+                      }
                     >
                       {user => (
                         <SelectItem key={user.id} textValue={user.fullName}>
@@ -346,6 +355,11 @@ export function CreateOrEditBookModal({
                       rules={{
                         required: "Це поле є обов'язковим",
                       }}
+                      endContent={
+                        <Button isIconOnly size="sm" variant="flat">
+                          <PlusIcon width={16} height={16} />
+                        </Button>
+                      }
                     >
                       {genre => (
                         <SelectItem key={genre.id} textValue={genre.name}>
@@ -386,7 +400,7 @@ export function CreateOrEditBookModal({
                           size="sm"
                           variant="flat"
                           onSuccess={files => {
-                            form.setValue('coverUrl', files[0].url);
+                            form.setValue('fileUrl', files[0].url);
                           }}
                           inputProps={{
                             accept:
@@ -401,17 +415,11 @@ export function CreateOrEditBookModal({
                       name="asin"
                       control={form.control}
                       label="ASIN"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
                     />
                     <ControlledInput
                       name="isbn"
                       control={form.control}
                       label="ISBN"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
                     />
                   </div>
                 </ModalBody>

@@ -10,9 +10,13 @@ export const addErrorToast = (error: unknown) => {
       color: 'danger',
     });
   } else if (error instanceof AxiosError) {
+    let message = error.response?.data.message;
+    if (Array.isArray(message)) {
+      message = message.join(', ');
+    }
     addToast({
       title: error.message,
-      description: error.response?.data.message,
+      description: message,
       severity: 'danger',
       color: 'danger',
     });

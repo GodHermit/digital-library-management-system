@@ -61,7 +61,7 @@ export function GeneralLayout() {
   return (
     <div
       className={clsx(
-        'flex min-h-screen',
+        'flex min-h-screen max-w-[100svw] grow',
         user?.isOnboardingFinished && 'h-screen'
       )}
     >
@@ -69,14 +69,14 @@ export function GeneralLayout() {
       {!user || user.isOnboardingFinished ? (
         <>
           <Aside />
-          <div className="flex grow flex-col">
+          <div className="flex grow flex-col overflow-auto">
             <Header />
             <ScrollShadow
               as="main"
-              className="flex grow rounded-tl-xl bg-default-100 p-8 print:overflow-visible"
+              className="relative flex grow overflow-auto rounded-tl-xl bg-default-100 p-8 print:overflow-visible"
               offset={32}
             >
-              <article className="prose prose-neutral h-max max-w-none grow rounded-lg bg-default-50 p-8 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0">
+              <article className="prose prose-neutral block h-max min-h-full max-w-full grow rounded-lg bg-default-50 p-8 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0">
                 <Outlet />
               </article>
             </ScrollShadow>

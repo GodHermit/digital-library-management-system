@@ -1,10 +1,23 @@
 import { Input, InputProps } from '@heroui/react';
-import { Controller, ControllerProps } from 'react-hook-form';
+import {
+  Controller,
+  ControllerProps,
+  FieldPath,
+  FieldValues,
+} from 'react-hook-form';
 
-export type IControlledInputProps = Omit<ControllerProps, 'render'> &
+export type IControlledFiledProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues,
+> = Omit<ControllerProps<TFieldValues, TName, TTransformedValues>, 'render'> &
   InputProps;
 
-export function ControlledInput(props: IControlledInputProps) {
+export function ControlledInput<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues,
+>(props: IControlledFiledProps<TFieldValues, TName, TTransformedValues>) {
   return (
     <Controller
       {...props}

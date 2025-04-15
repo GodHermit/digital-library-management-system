@@ -20,6 +20,7 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
+import { OptionalAuth } from '../auth/decorators/optional-auth.decorator';
 
 @Controller('books')
 @ApiTags('books')
@@ -30,11 +31,16 @@ export class BooksController {
   @ApiOperation({ summary: 'Get all books (paginated)' })
   @ApiResponse({ type: BookResponseDto, isArray: true })
   @ApiPaginationQuery(BOOKS_PAGINATION)
-  async getBooks(@Query() query: PaginateQuery) {
+  @BearerTokenAuth()
+  @OptionalAuth()
+  async getBooks(@Query() query: PaginateQuery, @GetUser() user?: UserEntity) {
     const books = await this.booksService.findAllWithFilters(query);
     return {
       ...books,
-      data: books.data.map((book) => new BookResponseDto(book)),
+      data: books.data.map(
+        (book) =>
+          new BookResponseDto(book, undefined, user?.role === EUserRole.ADMIN),
+      ),
     };
   }
 
@@ -42,10 +48,17 @@ export class BooksController {
   @ApiOperation({ summary: 'Get a book by ID' })
   @ApiResponse({ type: BookResponseDto })
   @ApiParam({ name: 'id' })
+  @BearerTokenAuth()
+  @OptionalAuth()
   async getBook(
     @Param('id', new ParseUUIDPipe()) id: string,
+    @GetUser() user: UserEntity,
   ): Promise<BookResponseDto> {
-    return new BookResponseDto(await this.booksService.findOne(id));
+    return new BookResponseDto(
+      await this.booksService.findOne(id),
+      undefined,
+      user.role === EUserRole.ADMIN,
+    );
   }
 
   @Post()
@@ -54,9 +67,13 @@ export class BooksController {
   @BearerTokenAuth(EUserRole.ADMIN)
   async createBook(
     @Body() dto: CreateBookDto,
-    @GetUser() user: UserEntity,
+    @GetUser() user?: UserEntity,
   ): Promise<BookResponseDto> {
-    return new BookResponseDto(await this.booksService.create(dto, user));
+    return new BookResponseDto(
+      await this.booksService.create(dto, user),
+      undefined,
+      user.role === EUserRole.ADMIN,
+    );
   }
 
   @Put(':id')
@@ -67,8 +84,13 @@ export class BooksController {
   async updateBook(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateBookDto,
+    @GetUser() user?: UserEntity,
   ): Promise<BookResponseDto> {
-    return new BookResponseDto(await this.booksService.update(id, dto));
+    return new BookResponseDto(
+      await this.booksService.update(id, dto),
+      undefined,
+      user?.role === EUserRole.ADMIN,
+    );
   }
 
   @Delete(':id')
@@ -78,8 +100,13 @@ export class BooksController {
   @BearerTokenAuth(EUserRole.ADMIN)
   async deleteBook(
     @Param('id', new ParseUUIDPipe()) id: string,
+    @GetUser() user?: UserEntity,
   ): Promise<BookResponseDto> {
-    return new BookResponseDto(await this.booksService.remove(id));
+    return new BookResponseDto(
+      await this.booksService.remove(id),
+      undefined,
+      user?.role === EUserRole.ADMIN,
+    );
   }
 
   // @Post(':id/like')

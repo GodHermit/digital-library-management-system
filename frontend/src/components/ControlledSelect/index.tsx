@@ -35,9 +35,13 @@ export function ControlledSelect<
           {...props}
           {...field}
           onChange={e => {
-            field.onChange([
-              ...new Set(e.target.value.split(',').filter(Boolean)),
-            ]);
+            if (props.selectionMode === 'multiple') {
+              field.onChange([
+                ...new Set(e.target.value.split(',').filter(Boolean)),
+              ]);
+            } else {
+              field.onChange(e.target.value);
+            }
           }}
           selectedKeys={
             Array.isArray(field.value) ? field.value : [field.value]

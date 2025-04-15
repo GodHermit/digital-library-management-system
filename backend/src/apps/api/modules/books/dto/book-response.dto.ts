@@ -57,7 +57,20 @@ export class BookResponseDto {
   @ApiProperty({ nullable: true })
   updatedAt?: Date;
 
-  constructor(entity: BookEntity, status?: EReadingStatus) {
+  @ApiProperty({ nullable: true })
+  fileUrl?: string;
+
+  @ApiProperty({ nullable: true })
+  asin?: string;
+
+  @ApiProperty({ nullable: true })
+  isbn?: string;
+
+  constructor(
+    entity: BookEntity,
+    status?: EReadingStatus,
+    includeFileUrl = false,
+  ) {
     this.id = entity.id;
     this.title = entity.title;
     this.description = entity.description;
@@ -83,7 +96,12 @@ export class BookResponseDto {
     this.edition = entity.edition;
     this.format = entity.format;
     this.status = status || entity.status;
+    this.asin = entity.asin;
+    this.isbn = entity.isbn;
     this.createdAt = entity.createdAt;
     this.updatedAt = entity.updatedAt;
+    if (includeFileUrl) {
+      this.fileUrl = entity.fileUrl;
+    }
   }
 }

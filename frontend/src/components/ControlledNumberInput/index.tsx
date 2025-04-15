@@ -1,11 +1,19 @@
 import { TARGET_CHAIN } from '@/configs/wagmi';
 import { NumberInput, NumberInputProps } from '@heroui/react';
-import { Controller, ControllerProps } from 'react-hook-form';
+import { Controller, ControllerProps, FieldPath, FieldValues } from 'react-hook-form';
 
-export type IControlledNumberInputProps = Omit<ControllerProps, 'render'> &
+export type IControlledNumberInputProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues,
+> = Omit<ControllerProps<TFieldValues, TName, TTransformedValues>, 'render'> &
   NumberInputProps;
 
-export function ControlledNumberInput(props: IControlledNumberInputProps) {
+export function ControlledNumberInput<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues,
+>(props: IControlledNumberInputProps<TFieldValues, TName, TTransformedValues>) {
   return (
     <Controller
       {...props}

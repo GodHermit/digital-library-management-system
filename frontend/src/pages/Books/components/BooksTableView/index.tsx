@@ -5,6 +5,7 @@ import { ITableRows } from '@/types/table';
 import {
   Button,
   getKeyValue,
+  Input,
   Pagination,
   Spinner,
   Table,
@@ -21,6 +22,8 @@ import { DeleteBookModal } from '../DeleteBookModal';
 import { Link } from 'react-router';
 import { ROUTES } from '@/types/routes';
 import { CreateOrEditBookModal } from '../CreateOrEditBookModal';
+import clsx from 'clsx';
+import { useDebounceValue } from 'usehooks-ts';
 
 const columns: ITableRows<IBook> = [
   {
@@ -57,7 +60,7 @@ const columns: ITableRows<IBook> = [
   {
     key: 'asin',
     label: 'ASIN',
-    render: item => item.isbn || <div className="text-zinc-500">–</div>,
+    render: item => item.asin || <div className="text-zinc-500">–</div>,
   },
   {
     key: 'isbn',
@@ -87,10 +90,13 @@ const columns: ITableRows<IBook> = [
 
 export function BooksTableView() {
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [searchDebounce] = useDebounceValue(search, 500);
   const { data, isLoading, mutate } = useGetBooksQuery({
     page,
     limit: 25,
     sortBy: ['createdAt:DESC'],
+    search: searchDebounce,
   });
 
   const totalPages = data?.meta.totalPages ?? 0;
@@ -105,28 +111,43 @@ export function BooksTableView() {
           isLoading={isLoading}
         />
       </div>
+      <div className="mb-4 flex justify-end gap-2">
+        <Input
+          placeholder="Пошук..."
+          size="sm"
+          variant="bordered"
+          className="max-w-[200px]"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <CreateOrEditBookModal onSuccess={mutate}>
+          <Button color="primary" size="sm">
+            Додати книгу
+          </Button>
+        </CreateOrEditBookModal>
+      </div>
       <Table
         removeWrapper
+        isHeaderSticky
+        isCompact
         className="not-prose"
+        classNames={{
+          base: 'overflow-auto',
+        }}
         aria-label="Таблиця користувачів"
-        bottomContent={
-          totalPages > 0 ? (
-            <div className="flex w-full justify-center">
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="primary"
-                page={page}
-                total={totalPages}
-                onChange={page => setPage(page)}
-              />
-            </div>
-          ) : null
-        }
       >
         <TableHeader columns={columns}>
-          {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
+          {column => (
+            <TableColumn
+              width={500}
+              key={column.key}
+              className={clsx(
+                column.key === 'actions' && 'sticky right-0 z-10 bg-default-100'
+              )}
+            >
+              {column.label}
+            </TableColumn>
+          )}
         </TableHeader>
         <TableBody
           items={data?.data ?? []}
@@ -137,8 +158,14 @@ export function BooksTableView() {
           {item => (
             <TableRow key={item?.id}>
               {columnKey => (
-                <TableCell key={`${item?.id}-${columnKey}`}>
-                  <div className="flex items-center gap-2">
+                <TableCell
+                  key={`${item?.id}-${columnKey}`}
+                  className={clsx(
+                    columnKey === 'actions' &&
+                      'sticky right-0 z-10 bg-default-50'
+                  )}
+                >
+                  <div className="flex items-center gap-2 whitespace-nowrap">
                     {columnKey !== 'actions' &&
                       (columns.find(c => c.key === columnKey)?.render?.(item) ||
                         getKeyValue(item, columnKey))}
@@ -149,8 +176,18 @@ export function BooksTableView() {
                           size="sm"
                           as={Link}
                           to={ROUTES.BOOK.replace(':id', item.id)}
+                          target="_blank"
                         >
                           <EyeIcon width={16} height={16} />
+                        </Button>
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          as={Link}
+                          to={item.fileUrl}
+                          target="_blank"
+                        >
+                          <BookIcon width={16} height={16} />
                         </Button>
                         <CreateOrEditBookModal book={item} onSuccess={mutate}>
                           <Button isIconOnly size="sm">
@@ -171,6 +208,19 @@ export function BooksTableView() {
           )}
         </TableBody>
       </Table>
+      {totalPages > 0 && (
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={page}
+            total={totalPages}
+            onChange={page => setPage(page)}
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -5,6 +5,7 @@ export const BOOKS_PAGINATION: PaginateConfig<BookEntity> = {
   multiWordSearch: true,
   sortableColumns: ['title', 'publishedAt', 'createdAt', 'updatedAt'],
   searchableColumns: [
+    'id',
     'title',
     'description',
     'genres.name',

@@ -1,10 +1,24 @@
 import { DatePicker, DatePickerProps } from '@heroui/react';
-import { Controller, ControllerProps } from 'react-hook-form';
+import { parseAbsolute } from '@internationalized/date';
+import {
+  Controller,
+  ControllerProps,
+  FieldPath,
+  FieldValues,
+} from 'react-hook-form';
 
-export type IControlledDatePickerProps = Omit<ControllerProps, 'render'> &
+export type IControlledDatePickerProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues,
+> = Omit<ControllerProps<TFieldValues, TName, TTransformedValues>, 'render'> &
   DatePickerProps;
 
-export function ControlledDatePicker(props: IControlledDatePickerProps) {
+export function ControlledDatePicker<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues,
+>(props: IControlledDatePickerProps<TFieldValues, TName, TTransformedValues>) {
   return (
     <Controller
       {...props}
@@ -19,6 +33,11 @@ export function ControlledDatePicker(props: IControlledDatePickerProps) {
           isInvalid={invalid}
           {...props}
           {...field}
+          value={field.value ? parseAbsolute(field.value, 'Europe/Kyiv') : undefined}
+          onChange={value => {
+            field.onChange(value?.toDate('Europe/Kyiv').toISOString());
+            props.onChange?.(value);
+          }}
         />
       )}
     />
