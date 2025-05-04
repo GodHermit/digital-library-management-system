@@ -4,7 +4,6 @@ import { ControlledNumberInput } from '@/components/ControlledNumberInput';
 import { ControlledSelect } from '@/components/ControlledSelect';
 import { ControlledTextArea } from '@/components/ControlledTextArea';
 import { UploadFileButton } from '@/components/UploadFileButton';
-import { useGetGenresQuery } from '@/hooks/useGetGenresQuery';
 import { useGetPublishersQuery } from '@/hooks/useGetPublishersQuery';
 import { useGetUsersQuery } from '@/hooks/useGetUsersQuery';
 import { bookService } from '@/services/bookService';
@@ -28,7 +27,8 @@ import { getLocalTimeZone, today } from '@internationalized/date';
 import locale from 'locale-codes';
 import { ArrowUpFromLineIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import { cloneElement, ReactElement, useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { GenresSelect } from './GenresSelect';
 
 interface IEditBookModalProps {
   book?: IBook;
@@ -51,7 +51,6 @@ export function CreateOrEditBookModal({
     limit: Number.POSITIVE_INFINITY,
     sortBy: ['fullName:ASC'],
   });
-  const { data: genres, isLoading: isGenresLoading } = useGetGenresQuery();
 
   const form = useForm<IBookCreate>({
     values: isEditMode
@@ -134,319 +133,294 @@ export function CreateOrEditBookModal({
           validationBehavior="native"
           onSubmit={form.handleSubmit(handleSubmit)}
         >
-          <ModalContent>
-            {onClose => (
-              <>
-                <ModalHeader className="flex items-center gap-2 px-4">
-                  {!isEditMode && (
-                    <>
-                      <PlusIcon />
-                      Додати книгу
-                    </>
-                  )}
-                  {isEditMode && (
-                    <>
-                      <PencilIcon />
-                      Редагувати книгу
-                    </>
-                  )}
-                </ModalHeader>
-                <ModalBody className="max-h-[calc(100vh-400px)] overflow-y-auto px-4 pb-4 pt-0">
-                  <div className="flex flex-col gap-4">
-                    <ControlledInput
-                      name="title"
-                      control={form.control}
-                      label="Назва книги"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                    />
-                    <ControlledTextArea
-                      name="description"
-                      description="Підтримує Markdown форматування"
-                      control={form.control}
-                      label="Опис книги"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                    />
-                    <ControlledDatePicker
-                      name="publishedAt"
-                      control={form.control}
-                      label="Дата публікації"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                      maxValue={today(getLocalTimeZone())}
-                    />
-                    <ControlledSelect
-                      name="publishedByUserId"
-                      control={form.control}
-                      label="Користувач, який опублікував книгу"
-                      isLoading={isUsersLoading}
-                      isDisabled={isUsersLoading}
-                      isVirtualized={(users?.data?.length ?? 0) > 10}
-                      items={users?.data ?? []}
-                      itemHeight={48}
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                    >
-                      {user => (
-                        <SelectItem key={user.id} textValue={user.fullName}>
-                          <div className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-small">
-                                {user.fullName}
-                              </span>
-                              <span className="text-tiny text-default-400">
-                                {user.email || user.phone}
-                              </span>
+          <FormProvider {...form}>
+            <ModalContent>
+              {onClose => (
+                <>
+                  <ModalHeader className="flex items-center gap-2 px-4">
+                    {!isEditMode && (
+                      <>
+                        <PlusIcon />
+                        Додати книгу
+                      </>
+                    )}
+                    {isEditMode && (
+                      <>
+                        <PencilIcon />
+                        Редагувати книгу
+                      </>
+                    )}
+                  </ModalHeader>
+                  <ModalBody className="max-h-[calc(100vh-400px)] overflow-y-auto px-4 pb-4 pt-0">
+                    <div className="flex flex-col gap-4">
+                      <ControlledInput
+                        name="title"
+                        control={form.control}
+                        label="Назва книги"
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                      />
+                      <ControlledTextArea
+                        name="description"
+                        description="Підтримує Markdown форматування"
+                        control={form.control}
+                        label="Опис книги"
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                      />
+                      <ControlledDatePicker
+                        name="publishedAt"
+                        control={form.control}
+                        label="Дата публікації"
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                        maxValue={today(getLocalTimeZone())}
+                      />
+                      <ControlledSelect
+                        name="publishedByUserId"
+                        control={form.control}
+                        label="Користувач, який опублікував книгу"
+                        isLoading={isUsersLoading}
+                        isDisabled={isUsersLoading}
+                        isVirtualized={(users?.data?.length ?? 0) > 10}
+                        items={users?.data ?? []}
+                        itemHeight={48}
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                      >
+                        {user => (
+                          <SelectItem key={user.id} textValue={user.fullName}>
+                            <div className="flex items-center gap-2">
+                              <div className="flex flex-col">
+                                <span className="text-small">
+                                  {user.fullName}
+                                </span>
+                                <span className="text-tiny text-default-400">
+                                  {user.email || user.phone}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </SelectItem>
-                      )}
-                    </ControlledSelect>
-                    <ControlledSelect
-                      name="language"
-                      control={form.control}
-                      label="Мова книги"
-                      description="Код мови згідно стандарту ISO 639-1"
-                      isVirtualized
-                      itemHeight={48}
-                      items={locale.all.filter(l => l.tag.length === 2)}
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                    >
-                      {language => (
-                        <SelectItem
-                          key={language.tag}
-                          textValue={translateLocale(
-                            language.tag,
-                            `${language.name} ${language.location}`
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-small capitalize">
-                                {translateLocale(
-                                  language.tag,
-                                  `${language.name} ${language.location}`
-                                )}
-                              </span>
-                              <span className="text-tiny text-default-400">
-                                {language.tag}
-                              </span>
+                          </SelectItem>
+                        )}
+                      </ControlledSelect>
+                      <ControlledSelect
+                        name="language"
+                        control={form.control}
+                        label="Мова книги"
+                        description="Код мови згідно стандарту ISO 639-1"
+                        isVirtualized
+                        itemHeight={48}
+                        items={locale.all.filter(l => l.tag.length === 2)}
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                      >
+                        {language => (
+                          <SelectItem
+                            key={language.tag}
+                            textValue={translateLocale(
+                              language.tag,
+                              `${language.name} ${language.location}`
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="flex flex-col">
+                                <span className="text-small capitalize">
+                                  {translateLocale(
+                                    language.tag,
+                                    `${language.name} ${language.location}`
+                                  )}
+                                </span>
+                                <span className="text-tiny text-default-400">
+                                  {language.tag}
+                                </span>
+                              </div>
                             </div>
+                          </SelectItem>
+                        )}
+                      </ControlledSelect>
+                      <ControlledInput
+                        name="coverUrl"
+                        control={form.control}
+                        label="URL обкладинки книги"
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                        placeholder="https://example.com/cover.jpg"
+                        endContent={
+                          <UploadFileButton
+                            isIconOnly
+                            size="sm"
+                            variant="flat"
+                            onSuccess={files => {
+                              form.setValue('coverUrl', files[0].url);
+                            }}
+                            inputProps={{
+                              accept: 'image/png,image/jpeg,image/webp',
+                            }}
+                          >
+                            <ArrowUpFromLineIcon width={16} height={16} />
+                          </UploadFileButton>
+                        }
+                      />
+                      <ControlledNumberInput
+                        name="priceInETH"
+                        control={form.control}
+                        label="Ціна в ETH"
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                        minValue={0}
+                        hideStepper
+                        endContent={
+                          <div className="flex items-center gap-1">
+                            ETH{' '}
+                            <span className="text-zinc-500">
+                              (~${toFixed(+(price || 0) * ethPriceInUSD.usd, 2)}
+                              )
+                            </span>
                           </div>
-                        </SelectItem>
-                      )}
-                    </ControlledSelect>
-                    <ControlledInput
-                      name="coverUrl"
-                      control={form.control}
-                      label="URL обкладинки книги"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                      placeholder="https://example.com/cover.jpg"
-                      endContent={
-                        <UploadFileButton
-                          isIconOnly
-                          size="sm"
-                          variant="flat"
-                          onSuccess={files => {
-                            form.setValue('coverUrl', files[0].url);
-                          }}
-                          inputProps={{
-                            accept: 'image/png,image/jpeg,image/webp',
-                          }}
-                        >
-                          <ArrowUpFromLineIcon width={16} height={16} />
-                        </UploadFileButton>
-                      }
-                    />
-                    <ControlledNumberInput
-                      name="priceInETH"
-                      control={form.control}
-                      label="Ціна в ETH"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                      minValue={0}
-                      hideStepper
-                      endContent={
-                        <div className="flex items-center gap-1">
-                          ETH{' '}
-                          <span className="text-zinc-500">
-                            (~${toFixed(+(price || 0) * ethPriceInUSD.usd, 2)})
-                          </span>
-                        </div>
-                      }
-                    />
-                    <ControlledSelect
-                      name="publisherId"
-                      control={form.control}
-                      label="Видавництво"
-                      isLoading={isPublishersLoading}
-                      isDisabled={isPublishersLoading}
-                      items={publishers ?? []}
-                    >
-                      {publisher => (
-                        <SelectItem
-                          key={publisher.id}
-                          textValue={publisher.name}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-small">
-                                {publisher.name}
-                              </span>
-                              <span className="text-tiny text-default-400">
-                                {publisher.website}
-                              </span>
+                        }
+                      />
+                      <ControlledSelect
+                        name="publisherId"
+                        control={form.control}
+                        label="Видавництво"
+                        isLoading={isPublishersLoading}
+                        isDisabled={isPublishersLoading}
+                        items={publishers ?? []}
+                      >
+                        {publisher => (
+                          <SelectItem
+                            key={publisher.id}
+                            textValue={publisher.name}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="flex flex-col">
+                                <span className="text-small">
+                                  {publisher.name}
+                                </span>
+                                <span className="text-tiny text-default-400">
+                                  {publisher.website}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </SelectItem>
-                      )}
-                    </ControlledSelect>
-                    <ControlledSelect
-                      name="authorIds"
-                      control={form.control}
-                      label="Автори"
-                      selectionMode="multiple"
-                      isLoading={isUsersLoading}
-                      isDisabled={isUsersLoading}
-                      isVirtualized={(users?.data?.length ?? 0) > 10}
-                      items={users?.data ?? []}
-                      itemHeight={48}
-                      endContent={
-                        <Button isIconOnly size="sm" variant="flat">
-                          <PlusIcon width={16} height={16} />
-                        </Button>
-                      }
-                    >
-                      {user => (
-                        <SelectItem key={user.id} textValue={user.fullName}>
-                          <div className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-small">
-                                {user.fullName}
-                              </span>
-                              <span className="text-tiny text-default-400">
-                                {user.email || user.phone}
-                              </span>
+                          </SelectItem>
+                        )}
+                      </ControlledSelect>
+                      <ControlledSelect
+                        name="authorIds"
+                        control={form.control}
+                        label="Автори"
+                        selectionMode="multiple"
+                        isLoading={isUsersLoading}
+                        isDisabled={isUsersLoading}
+                        isVirtualized={(users?.data?.length ?? 0) > 10}
+                        items={users?.data ?? []}
+                        itemHeight={48}
+                        endContent={
+                          <Button isIconOnly size="sm" variant="flat">
+                            <PlusIcon width={16} height={16} />
+                          </Button>
+                        }
+                      >
+                        {user => (
+                          <SelectItem key={user.id} textValue={user.fullName}>
+                            <div className="flex items-center gap-2">
+                              <div className="flex flex-col">
+                                <span className="text-small">
+                                  {user.fullName}
+                                </span>
+                                <span className="text-tiny text-default-400">
+                                  {user.email || user.phone}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </SelectItem>
-                      )}
-                    </ControlledSelect>
-                    <ControlledSelect
-                      name="genreIds"
-                      control={form.control}
-                      label="Жанри"
-                      selectionMode="multiple"
-                      isLoading={isGenresLoading}
-                      isDisabled={isGenresLoading}
-                      isVirtualized={(genres?.length ?? 0) > 10}
-                      items={genres ?? []}
-                      itemHeight={48}
-                      rules={{
-                        required: "Це поле є обов'язковим",
+                          </SelectItem>
+                        )}
+                      </ControlledSelect>
+                      <GenresSelect />
+                      <ControlledInput
+                        name="seriesId"
+                        control={form.control}
+                        label="ID серії"
+                      />
+                      <ControlledInput
+                        name="edition"
+                        control={form.control}
+                        label="Видання"
+                      />
+                      <ControlledInput
+                        name="format"
+                        control={form.control}
+                        label="Формат"
+                      />
+                      <ControlledInput
+                        name="fileUrl"
+                        control={form.control}
+                        label="URL файлу книги"
+                        rules={{
+                          required: "Це поле є обов'язковим",
+                        }}
+                        placeholder="https://"
+                        endContent={
+                          <UploadFileButton
+                            isIconOnly
+                            size="sm"
+                            variant="flat"
+                            onSuccess={files => {
+                              form.setValue('fileUrl', files[0].url);
+                            }}
+                            inputProps={{
+                              accept:
+                                'text/*,application/pdf,application/rtf,application/epub+zip',
+                            }}
+                          >
+                            <ArrowUpFromLineIcon width={16} height={16} />
+                          </UploadFileButton>
+                        }
+                      />
+                      <ControlledInput
+                        name="asin"
+                        control={form.control}
+                        label="ASIN"
+                      />
+                      <ControlledInput
+                        name="isbn"
+                        control={form.control}
+                        label="ISBN"
+                      />
+                    </div>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      variant="flat"
+                      color="default"
+                      className="ml-2"
+                      onPress={() => {
+                        onClose();
                       }}
-                      endContent={
-                        <Button isIconOnly size="sm" variant="flat">
-                          <PlusIcon width={16} height={16} />
-                        </Button>
-                      }
+                      isDisabled={isSubmitting}
                     >
-                      {genre => (
-                        <SelectItem key={genre.id} textValue={genre.name}>
-                          <div className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-small">{genre.name}</span>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      )}
-                    </ControlledSelect>
-                    <ControlledInput
-                      name="seriesId"
-                      control={form.control}
-                      label="ID серії"
-                    />
-                    <ControlledInput
-                      name="edition"
-                      control={form.control}
-                      label="Видання"
-                    />
-                    <ControlledInput
-                      name="format"
-                      control={form.control}
-                      label="Формат"
-                    />
-                    <ControlledInput
-                      name="fileUrl"
-                      control={form.control}
-                      label="URL файлу книги"
-                      rules={{
-                        required: "Це поле є обов'язковим",
-                      }}
-                      placeholder="https://"
-                      endContent={
-                        <UploadFileButton
-                          isIconOnly
-                          size="sm"
-                          variant="flat"
-                          onSuccess={files => {
-                            form.setValue('fileUrl', files[0].url);
-                          }}
-                          inputProps={{
-                            accept:
-                              'text/*,application/pdf,application/rtf,application/epub+zip',
-                          }}
-                        >
-                          <ArrowUpFromLineIcon width={16} height={16} />
-                        </UploadFileButton>
-                      }
-                    />
-                    <ControlledInput
-                      name="asin"
-                      control={form.control}
-                      label="ASIN"
-                    />
-                    <ControlledInput
-                      name="isbn"
-                      control={form.control}
-                      label="ISBN"
-                    />
-                  </div>
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    variant="flat"
-                    color="default"
-                    className="ml-2"
-                    onPress={() => {
-                      onClose();
-                    }}
-                    isDisabled={isSubmitting}
-                  >
-                    Скасувати
-                  </Button>
-                  <Button
-                    color="primary"
-                    className="ml-2"
-                    isLoading={isSubmitting}
-                    type="submit"
-                  >
-                    Зберегти
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
+                      Скасувати
+                    </Button>
+                    <Button
+                      color="primary"
+                      className="ml-2"
+                      isLoading={isSubmitting}
+                      type="submit"
+                    >
+                      Зберегти
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </FormProvider>
         </Form>
       </Modal>
     </>

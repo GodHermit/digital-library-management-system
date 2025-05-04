@@ -6,6 +6,9 @@ import { GenresRepository } from 'src/common/database/repositories/genres.reposi
 import { BooksRepository } from 'src/common/database/repositories/books.repository';
 import { runWithQueryRunner } from 'src/common/utils/run-with-query-runner';
 import { DataSource } from 'typeorm';
+import { UserEntity } from '../users/entities/user.entity';
+import { EGenreStatus } from './types';
+import { EUserRole } from '../users/types/user.enum';
 
 @Injectable()
 export class GenresService {
@@ -15,8 +18,18 @@ export class GenresService {
     private readonly booksRepository: BooksRepository,
   ) {}
 
-  async create(createGenreDto: CreateGenreDto): Promise<GenreEntity> {
-    const genre = this.genresRepository.create(createGenreDto);
+  async create(
+    createGenreDto: CreateGenreDto,
+    user: UserEntity,
+  ): Promise<GenreEntity> {
+    const genre = new GenreEntity();
+    genre.name = createGenreDto.name;
+    genre.status =
+      user.role === EUserRole.ADMIN
+        ? EGenreStatus.APPROVED
+        : EGenreStatus.PENDING;
+    genre.createdBy = user;
+    genre.createdAt = new Date();
     return this.genresRepository.save(genre);
   }
 
@@ -67,11 +80,23 @@ export class GenresService {
     });
   }
 
-  async findAll(): Promise<GenreEntity[]> {
-    return this.genresRepository.find();
+  async findAll(user?: UserEntity): Promise<GenreEntity[]> {
+    return this.genresRepository.find({
+      where: {
+        status:
+          user?.role === EUserRole.ADMIN ? undefined : EGenreStatus.APPROVED,
+      },
+      order: {
+        name: 'ASC',
+      },
+    });
   }
 
-  async findOne(id: string): Promise<GenreEntity> {
-    return this.genresRepository.findOneBy({ id });
+  async findOne(id: string, user?: UserEntity): Promise<GenreEntity> {
+    return this.genresRepository.findOneBy({
+      id,
+      status:
+        user?.role === EUserRole.ADMIN ? undefined : EGenreStatus.APPROVED,
+    });
   }
 }

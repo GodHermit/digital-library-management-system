@@ -6,6 +6,10 @@
       "cache": false,
       "persistent": true
     },
+    "backend#start:consumers:dev": {
+      "cache": false,
+      "persistent": true
+    },
     "backend#start:api": {
       "dependsOn": [
         "backend#build"
@@ -35,6 +39,15 @@
     "dev": {
       "with": [
         "backend#start:api:dev"
+      ],
+      "persistent": true,
+      "cache": false
+    },
+    "dev:full": {
+      "with": [
+        "backend#start:api:dev",
+        "backend#start:consumers:dev",
+        "frontend#dev"
       ],
       "persistent": true,
       "cache": false

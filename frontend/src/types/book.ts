@@ -28,6 +28,13 @@ export interface IBook {
 export interface IGenre {
   id: string;
   name: string;
+  status: EGenreStatus;
+}
+
+export enum EGenreStatus {
+  APPROVED = 'approved',
+  PENDING = 'pending',
+  REJECTED = 'rejected',
 }
 
 export enum EStatus {

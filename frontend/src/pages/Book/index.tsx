@@ -9,14 +9,18 @@ import { CheckIcon, ShoppingCartIcon } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { data, useParams } from 'react-router';
 import { useShallow } from 'zustand/shallow';
+import { CreateOrEditBookModal } from '../Books/components/CreateOrEditBookModal';
+import { useUserStore } from '@/stores/user';
 dayjs.locale(uk);
 
 export function Book() {
   const { id } = useParams();
-  const { data: book, isLoading } = useGetBookQuery(id);
+  const { data: book, isLoading, mutate } = useGetBookQuery(id);
   const [isInCart, addItem] = useShoppingCartStore(
     useShallow(s => [s.isInCart(book), s.addItem])
   );
+
+  const user = useUserStore(s => s.user);
 
   if (!book && !isLoading) {
     throw data('Book not found', { status: 404 });
@@ -54,7 +58,19 @@ export function Book() {
               <>Купити за {book?.priceInETH} ETH</>
             )}
           </Button>
-          {book && <AddToLibrary book={book} />}
+          {book && user && <AddToLibrary book={book} />}
+          {book && user && (
+            <CreateOrEditBookModal book={book} onSuccess={() => mutate()}>
+              <Button
+                size="sm"
+                radius="sm"
+                variant="light"
+                className="justify-start text-left text-zinc-500 hover:text-zinc-100"
+              >
+                Запропонувати зміни
+              </Button>
+            </CreateOrEditBookModal>
+          )}
         </div>
         <div>
           <h1 className="mb-2">{book?.title}</h1>
