@@ -3,14 +3,10 @@ import { databaseConfig } from './database.config';
 
 export const typeOrmConfig: DataSourceOptions = {
   type: 'postgres',
-  host: databaseConfig.host,
-  port: databaseConfig.port,
-  username: databaseConfig.userName,
-  password: databaseConfig.password,
-  database: databaseConfig.dbName,
+  url: databaseConfig.url,
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/migrations/**/*.js'],
-  migrationsRun: false,
+  migrationsRun: true,
   synchronize: false,
   logging: databaseConfig.isActiveLogger,
   ssl: databaseConfig.isSSL,

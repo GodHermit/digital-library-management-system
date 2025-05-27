@@ -4,11 +4,7 @@ import { config } from 'dotenv';
 config();
 
 export interface IDatabaseConfig {
-  host: string;
-  userName: string;
-  password: string;
-  port: number;
-  dbName: string;
+  url: string;
   poolSize: number;
   isActiveLogger?: boolean;
   isSSL: boolean;
@@ -17,16 +13,12 @@ export interface IDatabaseConfig {
 const logger = new Logger('DBConfig');
 
 const getDatabaseConfig = () => {
-  const host = process.env.PG_HOST;
-  const login = process.env.PG_USER;
-  const password = process.env.PG_PASSWORD;
-  const dbName = process.env.PG_DATABASE;
-  const port = process.env.PG_PORT;
-  const isActiveLogger = process.env.DB_LOGGER === 'enabled';
-  const isSSL = !!process.env.IS_SSL;
-  const poolSize = +process.env.DB_POOL_SIZE;
+  const url = process.env.DATABASE_URL;
+  const poolSize = parseInt(process.env.DATABASE_POOL_SIZE || '50', 10);
+  const isActiveLogger = process.env.DATABASE_LOGGER === 'true';
+  const isSSL = process.env.DATABASE_SSL === 'true';
 
-  if (!host || !login || !dbName || !password || !port || isNaN(+port)) {
+  if (!url) {
     throw new Error('Required env db variables not defined or invalid');
   }
 
@@ -35,11 +27,7 @@ const getDatabaseConfig = () => {
   }
 
   const config: IDatabaseConfig = {
-    host: host,
-    port: +port,
-    userName: login,
-    password: password,
-    dbName: dbName,
+    url,
     isActiveLogger: isActiveLogger,
     poolSize,
     isSSL,
