@@ -355,9 +355,9 @@ export function CheckoutPage() {
               <Chip
                 size="sm"
                 variant="flat"
-                color={orderStatusToColor[order.status]}
+                color={orderStatusToColor[order?.status]}
               >
-                {orderStatusToText[order.status]}
+                {orderStatusToText[order?.status]}
               </Chip>
             </div>
             <div>

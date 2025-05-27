@@ -7,8 +7,8 @@ import { ErrorResponse, Link, useRouteError } from 'react-router';
 export function ErrorPage() {
   const error = useRouteError();
   const status =
-    (error as unknown as { init: ErrorResponse }).init.status ||
-    (error as ErrorResponse).status;
+    (error as unknown as { init: ErrorResponse }).init?.status ||
+    (error as ErrorResponse)?.status;
 
   const errorMessage = useMemo(() => {
     if (status === 404) {
