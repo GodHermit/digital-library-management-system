@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  /* overscroll-behavior: none; */
+}
+
+#privy-dialog-backdrop {
+  backdrop-filter: blur(12px) saturate(1.5);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+#privy-modal-content {
+  --tw-shadow: var(--heroui-box-shadow-small);
+  --tw-shadow-colored: var(--heroui-box-shadow-small);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  background: hsl(var(--heroui-content1) / var(--heroui-content1-opacity, 1));
+  border-radius: var(--heroui-radius-large);
+  clip: rect(0px, 0px, 0px, 0px);
+}
+
+#privy-modal-content * {
+  color: hsl(
+    var(--heroui-foreground) /
+      var(--heroui-foreground-opacity, var(--tw-text-opacity))
+  ) !important;
+}
+
+#privy-dialog-title {
+  font-size: 1.5em;
+  line-height: 1.5;
+}

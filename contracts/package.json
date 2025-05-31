@@ -1,0 +1,36 @@
+{
+  "name": "contracts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx hardhat flatten ./contracts/DigitalLibrary.sol > ./dist/DigitalLibrary.sol",
+    "verify": "npx hardhat verify --network baseSepolia",
+    "deploy": "npx hardhat compile && hardhat ignition deploy ./ignition/modules/DigitalLibrary.ts --network baseSepolia --verify"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
+    "flatten": "^1.0.3",
+    "hardhat": "^2.22.19",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.10",
+    "@nomicfoundation/hardhat-ignition-viem": "^0.15.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.13",
+    "@nomicfoundation/hardhat-viem": "^2.0.0",
+    "@openzeppelin/contracts": "^5.2.0",
+    "@types/chai": "^4.2.0",
+    "@types/chai-as-promised": "^7.1.6",
+    "@types/mocha": ">=9.1.0",
+    "axios": "^1.8.4",
+    "chai": "^4.2.0",
+    "dotenv": "^16.4.7",
+    "hardhat-gas-reporter": "^1.0.8",
+    "solc": "^0.8.29",
+    "solidity-coverage": "^0.8.1",
+    "typescript": "^5.8.2",
+    "viem": "^2.23.14"
+  }
+}

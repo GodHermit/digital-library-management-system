@@ -1,0 +1,78 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "backend#start:api:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "backend#start:consumers:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "backend#start:api": {
+      "dependsOn": [
+        "backend#build"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+    "backend#start:consumers": {
+      "dependsOn": [
+        "backend#build"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+    "backend#build": {
+      "cache": false,
+      "outputs": [
+        "build/**"
+      ]
+    },
+    "frontend#build": {
+      "cache": false,
+      "outputs": [
+        "dist/**"
+      ]
+    },
+    "dev": {
+      "with": [
+        "backend#start:api:dev"
+      ],
+      "persistent": true,
+      "cache": false
+    },
+    "dev:full": {
+      "with": [
+        "backend#start:api:dev",
+        "backend#start:consumers:dev",
+        "frontend#dev"
+      ],
+      "persistent": true,
+      "cache": false
+    },
+    "production": {
+      "dependsOn": [
+        "backend#build",
+        "frontend#build"
+      ],
+      "with": [
+        "backend#start:api",
+        "backend#start:consumers"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": [
+        "frontend#build",
+        "backend#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    }
+  }
+}
