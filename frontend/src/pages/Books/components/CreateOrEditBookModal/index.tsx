@@ -15,11 +15,15 @@ import {
   addToast,
   Button,
   Form,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   SelectItem,
 } from '@heroui/react';
 import { getLocalTimeZone, today } from '@internationalized/date';
@@ -296,9 +300,50 @@ export function CreateOrEditBookModal({
                         items={users?.data ?? []}
                         itemHeight={48}
                         endContent={
-                          <Button isIconOnly size="sm" variant="flat">
-                            <PlusIcon width={16} height={16} />
-                          </Button>
+                          <Popover size="lg" onClose={() => form.reset()}>
+                            <PopoverTrigger>
+                              <Button
+                                isIconOnly
+                                size="sm"
+                                variant="flat"
+                                isLoading={isSubmitting}
+                              >
+                                <PlusIcon width={16} height={16} />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              {titleProps => (
+                                <div className="w-full px-1 py-2">
+                                  <p
+                                    className="text-small font-bold text-foreground"
+                                    {...titleProps}
+                                  >
+                                    Додати автора
+                                  </p>
+                                  <FormProvider {...form}>
+                                    <form className="mt-2 flex w-full flex-col gap-4">
+                                      <Input
+                                        label="ПІБ автора"
+                                        labelPlacement="outside"
+                                        type="text"
+                                        variant="bordered"
+                                        placeholder=" "
+                                        autoComplete="off"
+                                        isDisabled={isSubmitting}
+                                        isRequired
+                                      />
+                                      <Button
+                                        color="primary"
+                                        isLoading={isSubmitting}
+                                      >
+                                        Зберегти
+                                      </Button>
+                                    </form>
+                                  </FormProvider>
+                                </div>
+                              )}
+                            </PopoverContent>
+                          </Popover>
                         }
                       >
                         {user => (
