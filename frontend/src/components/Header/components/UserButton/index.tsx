@@ -15,12 +15,13 @@ import {
 } from '@heroui/react';
 import { usePrivy } from '@privy-io/react-auth';
 import {
-  BookIcon,
+  // BookIcon,
   Link2Icon,
   Link2OffIcon,
   LogOutIcon,
+  PlusIcon,
   SettingsIcon,
-  UserIcon
+  UserIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
@@ -137,7 +138,7 @@ export function UserButton() {
           />
           <Divider className="mb-1 mt-2" />
           <Listbox variant="flat" className="px-0">
-            <ListboxItem
+            {/* <ListboxItem
               key={ROUTES.USER}
               as={Link}
               // @ts-expect-error - `to` prop is missing
@@ -146,6 +147,16 @@ export function UserButton() {
               onPress={() => setIsOpen(false)}
             >
               Моя бібліотека
+            </ListboxItem> */}
+            <ListboxItem
+              key="mySettings"
+              as={Link}
+              // @ts-expect-error - `to` prop is missing
+              to={'https://tally.so/r/wzoRDg'}
+              startContent={<PlusIcon width={16} height={16} />}
+              onPress={() => setIsOpen(false)}
+            >
+              Опублікувати книгу
             </ListboxItem>
             <ListboxItem
               key="mySettings"

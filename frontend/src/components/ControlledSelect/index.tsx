@@ -34,6 +34,10 @@ export function ControlledSelect<
           isInvalid={invalid}
           {...props}
           {...field}
+          onBlur={e => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
           onChange={e => {
             if (props.selectionMode === 'multiple') {
               field.onChange([

@@ -1,5 +1,5 @@
 // import { AddToLibrary } from '@/components/AddToLibrary';
-import { AddToLibrary } from '@/components/AddToLibrary';
+// import { AddToLibrary } from '@/components/AddToLibrary';
 import { useGetBookQuery } from '@/hooks/useGetBookQuery';
 import { useShoppingCartStore } from '@/stores/soppingCart';
 import { Button, Chip, Image } from '@heroui/react';
@@ -58,7 +58,7 @@ export function Book() {
               <>Купити за {book?.priceInETH} ETH</>
             )}
           </Button>
-          {book && user && <AddToLibrary book={book} />}
+          {/* {book && user && <AddToLibrary book={book} />} */}
           {book && user && (
             <CreateOrEditBookModal book={book} onSuccess={() => mutate()}>
               <Button

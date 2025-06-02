@@ -4,7 +4,6 @@ import { ControlledNumberInput } from '@/components/ControlledNumberInput';
 import { ControlledSelect } from '@/components/ControlledSelect';
 import { ControlledTextArea } from '@/components/ControlledTextArea';
 import { UploadFileButton } from '@/components/UploadFileButton';
-import { useGetPublishersQuery } from '@/hooks/useGetPublishersQuery';
 import { useGetUsersQuery } from '@/hooks/useGetUsersQuery';
 import { bookService } from '@/services/bookService';
 import { priceService } from '@/services/priceService';
@@ -29,6 +28,7 @@ import { ArrowUpFromLineIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import { cloneElement, ReactElement, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { GenresSelect } from './GenresSelect';
+import { PublisherSelect } from './PublisherSelect ';
 
 interface IEditBookModalProps {
   book?: IBook;
@@ -44,8 +44,6 @@ export function CreateOrEditBookModal({
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!book;
-  const { data: publishers, isLoading: isPublishersLoading } =
-    useGetPublishersQuery();
   const { data: users, isLoading: isUsersLoading } = useGetUsersQuery({
     page: 1,
     limit: Number.POSITIVE_INFINITY,
@@ -286,32 +284,7 @@ export function CreateOrEditBookModal({
                           </div>
                         }
                       />
-                      <ControlledSelect
-                        name="publisherId"
-                        control={form.control}
-                        label="Видавництво"
-                        isLoading={isPublishersLoading}
-                        isDisabled={isPublishersLoading}
-                        items={publishers ?? []}
-                      >
-                        {publisher => (
-                          <SelectItem
-                            key={publisher.id}
-                            textValue={publisher.name}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="flex flex-col">
-                                <span className="text-small">
-                                  {publisher.name}
-                                </span>
-                                <span className="text-tiny text-default-400">
-                                  {publisher.website}
-                                </span>
-                              </div>
-                            </div>
-                          </SelectItem>
-                        )}
-                      </ControlledSelect>
+                      <PublisherSelect />
                       <ControlledSelect
                         name="authorIds"
                         control={form.control}

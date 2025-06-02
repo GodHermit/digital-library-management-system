@@ -28,26 +28,40 @@ export class PublishersService {
     user: UserEntity,
     qr?: QueryRunner,
   ): Promise<PublisherEntity> {
+    const isAlreadyExists = await this.publishersRepository.findOne({
+      where: [
+        { name: createPublisherDto.name },
+        { website: createPublisherDto.website },
+      ],
+    });
+    if (isAlreadyExists) {
+      throw new BadRequestException(
+        `Publisher with name "${createPublisherDto.name}" already exists`,
+      );
+    }
+
     const publisher = new PublisherEntity();
     publisher.name = createPublisherDto.name;
     publisher.website = createPublisherDto.website;
 
-    if (user.role === EUserRole.ADMIN) {
-      const owner = await this.usersRepository.findOneBy({
-        id: createPublisherDto?.ownerId,
-      });
+    if (createPublisherDto.ownerId) {
+      if (user.role === EUserRole.ADMIN) {
+        const owner = await this.usersRepository.findOneBy({
+          id: createPublisherDto?.ownerId,
+        });
 
-      if (!owner) {
-        throw new BadRequestException(
-          `User not found: ${createPublisherDto?.ownerId}`,
-        );
+        if (!owner) {
+          throw new BadRequestException(
+            `User not found: ${createPublisherDto?.ownerId}`,
+          );
+        }
+
+        publisher.ownedBy = owner;
+        publisher.ownedByUserId = owner.id;
+      } else {
+        publisher.ownedBy = user;
+        publisher.ownedByUserId = user.id;
       }
-
-      publisher.ownedBy = owner;
-      publisher.ownedByUserId = owner.id;
-    } else {
-      publisher.ownedBy = user;
-      publisher.ownedByUserId = user.id;
     }
 
     return this.publishersRepository.save(publisher, qr);
@@ -72,6 +86,7 @@ export class PublishersService {
 
     publisher.name = updatePublisherDto.name;
     publisher.website = updatePublisherDto.website;
+    publisher.ownedByUserId = updatePublisherDto.ownerId;
 
     await this.publishersRepository.save(publisher);
     return publisher;
