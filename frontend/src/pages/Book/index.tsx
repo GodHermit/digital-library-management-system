@@ -7,10 +7,11 @@ import dayjs from 'dayjs';
 import uk from 'dayjs/locale/uk';
 import { CheckIcon, ShoppingCartIcon } from 'lucide-react';
 import { Helmet } from 'react-helmet';
-import { data, useParams } from 'react-router';
+import { data, Link, useParams } from 'react-router';
 import { useShallow } from 'zustand/shallow';
 import { CreateOrEditBookModal } from '../Books/components/CreateOrEditBookModal';
 import { useUserStore } from '@/stores/user';
+import { EUserRole } from '@/types/user';
 dayjs.locale(uk);
 
 export function Book() {
@@ -59,7 +60,7 @@ export function Book() {
             )}
           </Button>
           {/* {book && user && <AddToLibrary book={book} />} */}
-          {book && user && (
+          {book && user && user.role === EUserRole.ADMIN && (
             <CreateOrEditBookModal book={book} onSuccess={() => mutate()}>
               <Button
                 size="sm"
@@ -70,6 +71,19 @@ export function Book() {
                 Запропонувати зміни
               </Button>
             </CreateOrEditBookModal>
+          )}
+          {book && (!user || (user && user.role === EUserRole.USER)) && (
+            <Button
+              as={Link}
+              to={'https://tally.so/r/wagPLZ'}
+              target="_blank"
+              size="sm"
+              radius="sm"
+              variant="light"
+              className="justify-start text-left text-zinc-500 hover:text-zinc-100"
+            >
+              Запропонувати зміни
+            </Button>
           )}
         </div>
         <div>
