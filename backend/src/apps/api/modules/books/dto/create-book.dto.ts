@@ -63,11 +63,13 @@ export class CreateBookDto {
   priceInETH: number;
 
   @ApiProperty({ example: EXAMPLE_UUID })
+  @IsOptional()
   @IsUUID()
   @IsNotEmpty()
   publisherId: string;
 
   @ApiProperty({ example: EXAMPLE_UUIDS })
+  @IsOptional()
   @IsUUID('4', { each: true })
   @IsNotEmpty()
   authorIds: string[];

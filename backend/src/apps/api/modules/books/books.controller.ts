@@ -57,7 +57,7 @@ export class BooksController {
     return new BookResponseDto(
       await this.booksService.findOne(id),
       undefined,
-      user.role === EUserRole.ADMIN,
+      user?.role === EUserRole.ADMIN,
     );
   }
 
@@ -72,7 +72,7 @@ export class BooksController {
     return new BookResponseDto(
       await this.booksService.create(dto, user),
       undefined,
-      user.role === EUserRole.ADMIN,
+      user?.role === EUserRole.ADMIN,
     );
   }
 
@@ -108,24 +108,4 @@ export class BooksController {
       user?.role === EUserRole.ADMIN,
     );
   }
-
-  // @Post(':id/like')
-  // @ApiOperation({ summary: 'Like a book by ID' })
-  // @ApiResponse({ type: BookResponseDto })
-  // @ApiParam({ name: 'id' })
-  // @BearerTokenAuth()
-  // async likeBook(@Param('id') id: string): Promise<BookEntity> {
-  //   // Implement the like functionality in the service
-  //   return this.booksService.like(id);
-  // }
-
-  // @Post(':id/unlike')
-  // @ApiOperation({ summary: 'Unlike a book by ID' })
-  // @ApiResponse({ type: BookResponseDto })
-  // @ApiParam({ name: 'id' })
-  // @BearerTokenAuth()
-  // async unlikeBook(@Param('id') id: string): Promise<BookEntity> {
-  //   // Implement the unlike functionality in the service
-  //   return this.booksService.unlike(id);
-  // }
 }

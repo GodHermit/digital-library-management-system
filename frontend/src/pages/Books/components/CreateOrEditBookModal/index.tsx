@@ -4,7 +4,6 @@ import { ControlledNumberInput } from '@/components/ControlledNumberInput';
 import { ControlledSelect } from '@/components/ControlledSelect';
 import { ControlledTextArea } from '@/components/ControlledTextArea';
 import { UploadFileButton } from '@/components/UploadFileButton';
-import { useGetPublishersQuery } from '@/hooks/useGetPublishersQuery';
 import { useGetUsersQuery } from '@/hooks/useGetUsersQuery';
 import { bookService } from '@/services/bookService';
 import { priceService } from '@/services/priceService';
@@ -16,11 +15,15 @@ import {
   addToast,
   Button,
   Form,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   SelectItem,
 } from '@heroui/react';
 import { getLocalTimeZone, today } from '@internationalized/date';
@@ -29,6 +32,7 @@ import { ArrowUpFromLineIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import { cloneElement, ReactElement, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { GenresSelect } from './GenresSelect';
+import { PublisherSelect } from './PublisherSelect ';
 
 interface IEditBookModalProps {
   book?: IBook;
@@ -44,8 +48,6 @@ export function CreateOrEditBookModal({
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!book;
-  const { data: publishers, isLoading: isPublishersLoading } =
-    useGetPublishersQuery();
   const { data: users, isLoading: isUsersLoading } = useGetUsersQuery({
     page: 1,
     limit: Number.POSITIVE_INFINITY,
@@ -286,32 +288,7 @@ export function CreateOrEditBookModal({
                           </div>
                         }
                       />
-                      <ControlledSelect
-                        name="publisherId"
-                        control={form.control}
-                        label="Видавництво"
-                        isLoading={isPublishersLoading}
-                        isDisabled={isPublishersLoading}
-                        items={publishers ?? []}
-                      >
-                        {publisher => (
-                          <SelectItem
-                            key={publisher.id}
-                            textValue={publisher.name}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="flex flex-col">
-                                <span className="text-small">
-                                  {publisher.name}
-                                </span>
-                                <span className="text-tiny text-default-400">
-                                  {publisher.website}
-                                </span>
-                              </div>
-                            </div>
-                          </SelectItem>
-                        )}
-                      </ControlledSelect>
+                      <PublisherSelect />
                       <ControlledSelect
                         name="authorIds"
                         control={form.control}
@@ -323,9 +300,50 @@ export function CreateOrEditBookModal({
                         items={users?.data ?? []}
                         itemHeight={48}
                         endContent={
-                          <Button isIconOnly size="sm" variant="flat">
-                            <PlusIcon width={16} height={16} />
-                          </Button>
+                          <Popover size="lg" onClose={() => form.reset()}>
+                            <PopoverTrigger>
+                              <Button
+                                isIconOnly
+                                size="sm"
+                                variant="flat"
+                                isLoading={isSubmitting}
+                              >
+                                <PlusIcon width={16} height={16} />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              {titleProps => (
+                                <div className="w-full px-1 py-2">
+                                  <p
+                                    className="text-small font-bold text-foreground"
+                                    {...titleProps}
+                                  >
+                                    Додати автора
+                                  </p>
+                                  <FormProvider {...form}>
+                                    <form className="mt-2 flex w-full flex-col gap-4">
+                                      <Input
+                                        label="ПІБ автора"
+                                        labelPlacement="outside"
+                                        type="text"
+                                        variant="bordered"
+                                        placeholder=" "
+                                        autoComplete="off"
+                                        isDisabled={isSubmitting}
+                                        isRequired
+                                      />
+                                      <Button
+                                        color="primary"
+                                        isLoading={isSubmitting}
+                                      >
+                                        Зберегти
+                                      </Button>
+                                    </form>
+                                  </FormProvider>
+                                </div>
+                              )}
+                            </PopoverContent>
+                          </Popover>
                         }
                       >
                         {user => (

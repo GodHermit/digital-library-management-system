@@ -2,18 +2,21 @@ import { BRAND_NAME } from '@/constants/brand';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { ROUTES } from '@/types/routes';
-import { EUserRole, EUserType } from '@/types/user';
+import {
+  EUserRole,
+  // EUserType
+} from '@/types/user';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  BookIcon,
-  BookUpIcon,
+  // BookIcon,
+  // BookUpIcon,
   CircleHelpIcon,
   CompassIcon,
   DollarSignIcon,
   HomeIcon,
   LibraryBigIcon,
-  ShoppingCartIcon,
+  // ShoppingCartIcon,
   UsersIcon,
 } from 'lucide-react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -63,7 +66,7 @@ export function Aside() {
             >
               Каталог
             </AsideItem>
-            <AsideItem
+            {/* <AsideItem
               href={ROUTES.USER}
               isAsideOpen={isAsideOpen}
               isAsideOpenAnimated={isAsideOpenAnimated}
@@ -81,7 +84,7 @@ export function Aside() {
               >
                 Опубліковані книги
               </AsideItem>
-            )}
+            )} */}
           </>
         )}
         {user?.role === EUserRole.ADMIN && (
@@ -102,14 +105,14 @@ export function Aside() {
             >
               Користувачі
             </AsideItem>
-            <AsideItem
+            {/* <AsideItem
               href={ROUTES.ORDERS}
               isAsideOpen={isAsideOpen}
               isAsideOpenAnimated={isAsideOpenAnimated}
               icon={<ShoppingCartIcon />}
             >
               Замовлення
-            </AsideItem>
+            </AsideItem> */}
           </>
         )}
         <div className="-mx-4 my-2 border-b border-default-200" />
