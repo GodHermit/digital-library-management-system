@@ -48,7 +48,7 @@ export function CreateOrEditBookModal({
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!book;
-  const { data: users, isLoading: isUsersLoading } = useGetUsersQuery({
+  const { data: users, isLoading: isUsersLoading, mutate } = useGetUsersQuery({
     page: 1,
     limit: Number.POSITIVE_INFINITY,
     sortBy: ['fullName:ASC'],
@@ -103,6 +103,29 @@ export function CreateOrEditBookModal({
       addErrorToast(error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const [authorName, setAuthorName] = useState('');
+  const [isAuthorSubmitting, setIsAuthorSubmitting] = useState(false);
+  const handleSubmitNewAuthor = async () => {
+    try {
+      setIsAuthorSubmitting(true);
+      const newAuthor = await bookService.createAuthor(authorName);
+      form.setValue('authorIds', [
+        ...(form.getValues('authorIds') || []),
+        newAuthor.id,
+      ]);
+      setAuthorName('');
+      addToast({
+        title: 'Автора успішно додано',
+        severity: 'success',
+      });
+      await mutate();
+    } catch (error) {
+      addErrorToast(error);
+    } finally{ 
+      setIsAuthorSubmitting(false);
     }
   };
 
@@ -289,78 +312,90 @@ export function CreateOrEditBookModal({
                         }
                       />
                       <PublisherSelect />
-                      <ControlledSelect
-                        name="authorIds"
-                        control={form.control}
-                        label="Автори"
-                        selectionMode="multiple"
-                        isLoading={isUsersLoading}
-                        isDisabled={isUsersLoading}
-                        isVirtualized={(users?.data?.length ?? 0) > 10}
-                        items={users?.data ?? []}
-                        itemHeight={48}
-                        endContent={
-                          <Popover size="lg" onClose={() => form.reset()}>
-                            <PopoverTrigger>
-                              <Button
-                                isIconOnly
-                                size="sm"
-                                variant="flat"
-                                isLoading={isSubmitting}
-                              >
-                                <PlusIcon width={16} height={16} />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                              {titleProps => (
-                                <div className="w-full px-1 py-2">
-                                  <p
-                                    className="text-small font-bold text-foreground"
-                                    {...titleProps}
-                                  >
-                                    Додати автора
-                                  </p>
-                                  <FormProvider {...form}>
-                                    <form className="mt-2 flex w-full flex-col gap-4">
-                                      <Input
-                                        label="ПІБ автора"
-                                        labelPlacement="outside"
-                                        type="text"
-                                        variant="bordered"
-                                        placeholder=" "
-                                        autoComplete="off"
-                                        isDisabled={isSubmitting}
-                                        isRequired
-                                      />
-                                      <Button
-                                        color="primary"
-                                        isLoading={isSubmitting}
-                                      >
-                                        Зберегти
-                                      </Button>
-                                    </form>
-                                  </FormProvider>
+                      <div className="relative">
+                        <ControlledSelect
+                          name="authorIds"
+                          control={form.control}
+                          label="Автори"
+                          selectionMode="multiple"
+                          isLoading={isUsersLoading}
+                          isDisabled={isUsersLoading}
+                          isVirtualized={(users?.data?.length ?? 0) > 10}
+                          items={users?.data ?? []}
+                          itemHeight={48}
+                        >
+                          {user => (
+                            <SelectItem key={user.id} textValue={user.fullName}>
+                              <div className="flex items-center gap-2">
+                                <div className="flex flex-col">
+                                  <span className="text-small">
+                                    {user.fullName}
+                                  </span>
+                                  <span className="text-tiny text-default-400">
+                                    {user.email || user.phone}
+                                  </span>
                                 </div>
-                              )}
-                            </PopoverContent>
-                          </Popover>
-                        }
-                      >
-                        {user => (
-                          <SelectItem key={user.id} textValue={user.fullName}>
-                            <div className="flex items-center gap-2">
-                              <div className="flex flex-col">
-                                <span className="text-small">
-                                  {user.fullName}
-                                </span>
-                                <span className="text-tiny text-default-400">
-                                  {user.email || user.phone}
-                                </span>
                               </div>
-                            </div>
-                          </SelectItem>
-                        )}
-                      </ControlledSelect>
+                            </SelectItem>
+                          )}
+                        </ControlledSelect>
+                        <Popover size="lg" onClose={() => form.reset()}>
+                          <PopoverTrigger>
+                            <Button
+                              isIconOnly
+                              size="sm"
+                              variant="flat"
+                              isLoading={isSubmitting}
+                              className="absolute bottom-1 right-1"
+                            >
+                              <PlusIcon width={16} height={16} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            {titleProps => (
+                              <div className="w-full px-1 py-2">
+                                <p
+                                  className="text-small font-bold text-foreground"
+                                  {...titleProps}
+                                >
+                                  Додати автора
+                                </p>
+                                <FormProvider {...form}>
+                                  <form className="mt-2 flex w-full flex-col gap-4">
+                                    <Input
+                                      label="ПІБ автора"
+                                      labelPlacement="outside"
+                                      type="text"
+                                      variant="bordered"
+                                      placeholder=" "
+                                      autoComplete="off"
+                                      isDisabled={isSubmitting || isAuthorSubmitting}
+                                      isRequired
+                                      onBlur={e => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                      }}
+                                      value={authorName}
+                                      onChange={e =>
+                                        setAuthorName(e.target.value)
+                                      }
+                                    />
+                                    <Button
+                                      color="primary"
+                                      isLoading={
+                                        isSubmitting || isAuthorSubmitting
+                                      }
+                                      onPress={handleSubmitNewAuthor}
+                                    >
+                                      Зберегти
+                                    </Button>
+                                  </form>
+                                </FormProvider>
+                              </div>
+                            )}
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                       <GenresSelect />
                       <ControlledInput
                         name="seriesId"
