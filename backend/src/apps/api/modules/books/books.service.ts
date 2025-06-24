@@ -12,6 +12,8 @@ import { differenceWith } from 'lodash';
 import { UsersRepository } from 'src/common/database/repositories/users.repository';
 import { UserEntity } from '../users/entities/user.entity';
 import { PublishersRepository } from 'src/common/database/repositories/publishers.repository';
+import { EUserRole } from '../users/types/user.enum';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 @Injectable()
 export class BooksService {
@@ -196,5 +198,18 @@ export class BooksService {
       query.sortBy = [String(query.sortBy).split(':') as [string, string]];
     }
     return await paginate(query, this.booksRepository, BOOKS_PAGINATION);
+  }
+
+  async addAuthor(name: string, user: UserEntity) {
+    if (user.role !== EUserRole.ADMIN) {
+      throw new BadRequestException('Only admins can add authors');
+    }
+    const newAuthor = this.usersRepository.create({
+      fullName: name,
+      role: EUserRole.USER,
+    });
+    const author = await this.usersRepository.save(newAuthor);
+
+    return new UserResponseDto(author);
   }
 }

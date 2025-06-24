@@ -67,6 +67,7 @@ export function PublisherPopover({
           size="sm"
           variant="flat"
           isLoading={isLoading || isSubmitting}
+          className="absolute bottom-1 right-1.5"
         >
           {icon ? icon : <PlusIcon width={16} height={16} />}
         </Button>

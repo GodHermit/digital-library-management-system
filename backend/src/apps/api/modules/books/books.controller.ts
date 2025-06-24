@@ -21,6 +21,7 @@ import { UpdateBookDto } from './dto/update-book.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { OptionalAuth } from '../auth/decorators/optional-auth.decorator';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 @Controller('books')
 @ApiTags('books')
@@ -107,5 +108,16 @@ export class BooksController {
       undefined,
       user?.role === EUserRole.ADMIN,
     );
+  }
+
+  @Post('authors')
+  @ApiOperation({ summary: 'Add a new author' })
+  @ApiResponse({ type: Object, description: 'Author ID and name' })
+  @BearerTokenAuth(EUserRole.ADMIN)
+  async addAuthor(
+    @Body('name') name: string,
+    @GetUser() user?: UserEntity,
+  ): Promise<UserResponseDto> {
+    return await this.booksService.addAuthor(name, user);
   }
 }

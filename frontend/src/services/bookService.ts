@@ -46,6 +46,14 @@ export class BookService {
 
     await $api.delete(url);
   }
+
+  async createAuthor(name: string) {
+    const url = '/api/books/authors';
+    const { data } = await $api.post<{ id: string; name: string }>(url, {
+      name,
+    });
+    return data;
+  }
 }
 
 export const bookService = new BookService();
