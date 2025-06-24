@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
 import * as mimeTypes from 'mime-types';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class FilesService {
@@ -33,7 +34,7 @@ export class FilesService {
         const extension =
           mimeTypes.extension(file.mimetype) || extensionFromFileName;
 
-        const fileName = `${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        const fileName = `${Date.now()}-${randomUUID()}.${extension}`;
         const fileUrl = `${baseUrl}/assets/${fileName}`;
         const filePath = join(__dirname, '../../../../../public/assets');
 
