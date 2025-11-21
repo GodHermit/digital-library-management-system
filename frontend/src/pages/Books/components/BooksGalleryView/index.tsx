@@ -37,7 +37,7 @@ export function BooksGalleryView() {
         ))}
       </section>
       {!!data && data?.meta.totalPages > 1 && (
-        <div className="mt-8 flex w-full justify-center not-prose">
+        <div className="not-prose mt-8 flex w-full justify-center">
           <Pagination
             page={page}
             total={data?.meta.totalPages || 1}
