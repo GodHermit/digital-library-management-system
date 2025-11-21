@@ -49,6 +49,7 @@ export function Header() {
       >
         <Button
           isIconOnly
+          isDisabled
           className="ml-auto"
           onPress={() => setIsSearchModalOpen(true)}
         >
@@ -56,9 +57,9 @@ export function Header() {
         </Button>
       </Tooltip>
 
-      <Badge color="primary" content={totalItemsInCart}>
+      <Badge color="primary" content={totalItemsInCart} isInvisible={totalItemsInCart === 0}>
         <Tooltip placement="bottom" delay={1000} content="Кошик покупок">
-          <Button isIconOnly as={Link} to={ROUTES.SHOPPING_CART}>
+          <Button isIconOnly isDisabled as={Link} to={ROUTES.SHOPPING_CART}>
             <ShoppingCartIcon />
           </Button>
         </Tooltip>

@@ -8,7 +8,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { COLOR_MODE } from '@/types/settings';
 import { fontSizeToPX } from '@/utils/settings';
-import { ScrollShadow } from '@heroui/react';
+import { Alert, ScrollShadow } from '@heroui/react';
 import { useLinkAccount, useLogin } from '@privy-io/react-auth';
 import clsx from 'clsx';
 import { useEffect } from 'react';
@@ -59,41 +59,47 @@ export function GeneralLayout() {
   }, [fontSize]);
 
   return (
-    <div
-      className={clsx(
-        'flex min-h-screen max-w-[100svw] grow',
-        user?.isOnboardingFinished && 'h-screen'
-      )}
-    >
-      <Helmet titleTemplate={`%s | ${BRAND_NAME}`} defaultTitle={BRAND_NAME} />
-      {!user || user.isOnboardingFinished ? (
-        <>
-          <Aside />
-          <div className="flex grow flex-col overflow-auto">
-            <Header />
-            <ScrollShadow
-              as="main"
-              className="relative flex grow overflow-auto rounded-tl-xl bg-default-100 p-8 print:overflow-visible"
-              offset={32}
-            >
-              <article className="prose prose-neutral block h-max min-h-full max-w-full grow rounded-lg bg-default-50 p-8 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0">
-                <Outlet />
-              </article>
-            </ScrollShadow>
-          </div>
-        </>
-      ) : (
-        <OnboardingPage />
-      )}
-      <Toaster
-        position="bottom-right"
-        containerStyle={{
-          zIndex: 1000000,
-        }}
-        toastOptions={{
-          className: 'text-foreground bg-default-100',
-        }}
+    <div className="flex h-screen max-h-screen min-h-screen max-w-[100svw] flex-col overflow-hidden">
+      <Alert
+        color="danger"
+        radius="none"
+        title={`Шановні користувачі! Розробка проєкту ${BRAND_NAME} призупинена на невизначений термін.`}
       />
+
+      <div className={clsx('flex h-[calc(100vh-4rem)] grow')}>
+        <Helmet
+          titleTemplate={`%s | ${BRAND_NAME}`}
+          defaultTitle={BRAND_NAME}
+        />
+        {!user || user.isOnboardingFinished ? (
+          <>
+            <Aside />
+            <div className="flex grow flex-col overflow-auto">
+              <Header />
+              <ScrollShadow
+                as="main"
+                className="relative flex grow overflow-auto rounded-tl-xl bg-default-100 p-8 print:overflow-visible"
+                offset={32}
+              >
+                <article className="prose prose-neutral block h-max min-h-full max-w-full grow rounded-lg bg-default-50 p-8 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0">
+                  <Outlet />
+                </article>
+              </ScrollShadow>
+            </div>
+          </>
+        ) : (
+          <OnboardingPage />
+        )}
+        <Toaster
+          position="bottom-right"
+          containerStyle={{
+            zIndex: 1000000,
+          }}
+          toastOptions={{
+            className: 'text-foreground bg-default-100',
+          }}
+        />
+      </div>
     </div>
   );
 }

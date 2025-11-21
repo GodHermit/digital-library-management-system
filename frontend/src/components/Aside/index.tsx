@@ -1,23 +1,23 @@
 import { BRAND_NAME } from '@/constants/brand';
 import { useSettingsStore } from '@/stores/settings';
-import { useUserStore } from '@/stores/user';
+// import { useUserStore } from '@/stores/user';
 import { ROUTES } from '@/types/routes';
-import {
-  EUserRole,
-  // EUserType
-} from '@/types/user';
+// import {
+//   EUserRole,
+//   // EUserType
+// } from '@/types/user';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   // BookIcon,
   // BookUpIcon,
-  CircleHelpIcon,
-  CompassIcon,
+  // CircleHelpIcon,
+  // CompassIcon,
   DollarSignIcon,
   HomeIcon,
   LibraryBigIcon,
   // ShoppingCartIcon,
-  UsersIcon,
+  // UsersIcon,
 } from 'lucide-react';
 import { useDebounceValue } from 'usehooks-ts';
 import { useShallow } from 'zustand/shallow';
@@ -27,7 +27,7 @@ export function Aside() {
   const [isAsideOpen] = useSettingsStore(useShallow(s => [s.isAsideOpen]));
   const [isAsideOpenDebounce] = useDebounceValue(isAsideOpen, 300);
   const isAsideOpenAnimated = isAsideOpenDebounce && isAsideOpen;
-  const user = useUserStore(useShallow(s => s.user));
+  // const user = useUserStore(useShallow(s => s.user));
 
   return (
     <aside
@@ -56,7 +56,7 @@ export function Aside() {
         >
           Головна
         </AsideItem>
-        {user?.role === EUserRole.USER && (
+        {/* {user?.role === EUserRole.USER && (
           <>
             <AsideItem
               href={ROUTES.BOOKS}
@@ -66,7 +66,7 @@ export function Aside() {
             >
               Каталог
             </AsideItem>
-            {/* <AsideItem
+            <AsideItem
               href={ROUTES.USER}
               isAsideOpen={isAsideOpen}
               isAsideOpenAnimated={isAsideOpenAnimated}
@@ -84,10 +84,10 @@ export function Aside() {
               >
                 Опубліковані книги
               </AsideItem>
-            )} */}
+            )}
           </>
-        )}
-        {user?.role === EUserRole.ADMIN && (
+        )} */}
+        {/* {user?.role === EUserRole.ADMIN && (
           <>
             <AsideItem
               href={ROUTES.BOOKS}
@@ -112,9 +112,9 @@ export function Aside() {
               icon={<ShoppingCartIcon />}
             >
               Замовлення
-            </AsideItem> */}
+            </AsideItem>
           </>
-        )}
+        )} */}
         <div className="-mx-4 my-2 border-b border-default-200" />
         <AnimatePresence>
           {isAsideOpenAnimated && (
@@ -128,14 +128,14 @@ export function Aside() {
             </motion.div>
           )}
         </AnimatePresence>
-        <AsideItem
+        {/* <AsideItem
           href={ROUTES.FAQ}
           isAsideOpen={isAsideOpen}
           isAsideOpenAnimated={isAsideOpenAnimated}
           icon={<CircleHelpIcon />}
         >
           ЧаПи (FAQ)
-        </AsideItem>
+        </AsideItem> */}
         <AsideItem
           href={ROUTES.DONATE}
           isAsideOpen={isAsideOpen}

@@ -33,25 +33,21 @@ export function UserButton() {
   const { disconnect } = useDisconnect();
   const {
     authenticated: isAuthenticated,
-    ready: isReady,
+    // ready: isReady,
     user: privyUser,
     login,
     logout,
     linkWallet,
   } = usePrivy();
   // Disable login when Privy is not ready or the user is already authenticated
-  const isLoginDisabled = !isReady || (isReady && isAuthenticated);
+  // const isLoginDisabled = !isReady || (isReady && isAuthenticated);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_copiedText, copy] = useCopyToClipboard();
   // const user = useUserStore(useShallow(s => s.user));
 
   if (!isAuthenticated) {
     return (
-      <Button
-        isDisabled={isLoginDisabled}
-        color="primary"
-        onPress={() => login()}
-      >
+      <Button isDisabled color="primary" onPress={() => login()}>
         Увійти
       </Button>
     );
@@ -77,6 +73,7 @@ export function UserButton() {
         <PopoverTrigger>
           <Button
             className="relative aria-expanded:z-[99999999]"
+            isDisabled
             isIconOnly
             aria-label="User"
           >
