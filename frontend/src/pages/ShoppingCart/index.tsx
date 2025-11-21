@@ -81,7 +81,7 @@ export function ShoppingCart() {
           </Tooltip>
         );
     }
-  }, []);
+  }, [ethPrice.usd, handleRemoveItem]);
 
   return (
     <>

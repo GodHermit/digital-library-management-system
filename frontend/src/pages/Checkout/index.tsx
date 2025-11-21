@@ -15,6 +15,7 @@ import { toFixed, toFixedFloor } from '@/utils/number';
 import { orderStatusToColor, orderStatusToText } from '@/utils/order';
 import { fontSizeToPX } from '@/utils/settings';
 import {
+  Alert,
   Button,
   Chip,
   Input,
@@ -38,6 +39,8 @@ import { useAccount, useBalance } from 'wagmi';
 import { useShallow } from 'zustand/shallow';
 import { ICheckoutForm } from './scheme';
 import { downloadByUrl } from '@/utils/download';
+
+const isCheckoutDisabled = true;
 
 export function CheckoutPage() {
   const { id: orderId } = useParams();
@@ -402,6 +405,14 @@ export function CheckoutPage() {
           </div>
         )}
         <div className="flex flex-col gap-2">
+          {isCheckoutDisabled && (
+            <Alert
+              color="warning"
+              variant="flat"
+              title="Оформлення замовлення тимчасово недоступне"
+              description="Будь ласка, спробуйте пізніше або зверніться до служби підтримки."
+            />
+          )}
           {order?.status === EOrderStatus.COMPLETED && (
             <>
               <div className="text-center text-green-500">
@@ -427,7 +438,7 @@ export function CheckoutPage() {
               className="w-full"
               color="primary"
               variant="solid"
-              isDisabled={!isReady || isLoginDisabled}
+              isDisabled={!isReady || isLoginDisabled || isCheckoutDisabled}
               isLoading={!isReady}
               onPress={() => login()}
               type="button"
@@ -445,7 +456,8 @@ export function CheckoutPage() {
                 !address ||
                 !isAuthenticated ||
                 !isReady ||
-                (order && order?.status !== EOrderStatus.PENDING)
+                (order && order?.status !== EOrderStatus.PENDING) ||
+                isCheckoutDisabled
               }
               isLoading={!isReady || form.formState.isSubmitting}
               type="submit"
